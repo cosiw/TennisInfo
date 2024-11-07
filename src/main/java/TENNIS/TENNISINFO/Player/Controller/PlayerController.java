@@ -24,9 +24,9 @@ public class PlayerController {
         try{
             String jsonString = playerService.getPlayerByApi(rapidPlayerId);
 
-            playerService.savePlayer(jsonString);
+            playerService.savePlayer(jsonString, rapidPlayerId);
 
-            playerService.saveCareer(jsonString);
+            playerService.saveCareer(jsonString, rapidPlayerId);
         }catch(Exception ex){
             ex.printStackTrace();
         }

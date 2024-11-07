@@ -14,16 +14,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class RankServiceImpl implements RankService {
 
-    @Autowired
     private ObjectMapper objectMapper;
 
-    RankingRepository rankingRepository;
+    private RankingRepository rankingRepository;
 
-    RapidApiConfig rapidApiConfig;
+    private RapidApiConfig rapidApiConfig;
     @Autowired
-    public RankServiceImpl(RankingRepository rankingRepository, RapidApiConfig rapidApiConfig){
+    public RankServiceImpl(RankingRepository rankingRepository, RapidApiConfig rapidApiConfig, ObjectMapper objectMapper){
         this.rankingRepository = rankingRepository;
         this.rapidApiConfig = rapidApiConfig;
+        this.objectMapper = objectMapper;
     }
     @Override
     public String getRankingApiData() throws Exception {

@@ -1,9 +1,14 @@
 package TENNIS.TENNISINFO.Player.Domain;
 
 import TENNIS.TENNISINFO.Common.domain.BaseTimeEntity;
+import TENNIS.TENNISINFO.Player.Domain.dto.PlayerDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +20,13 @@ import lombok.NoArgsConstructor;
 public class Career extends BaseTimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="CR_ID")
     private Long crId;
-    @Column(name="PLAYER_ID")
-    private Long playerId;
+
+    @OneToOne
+    @JoinColumn(name="PLAYER_ID")
+    private Player player;
     @Column(name="CR_MATCH_LOST_D")
     private String crMatchLostD;
     @Column(name="CR_MATCH_LOST_S")
@@ -62,5 +70,28 @@ public class Career extends BaseTimeEntity {
     @Column(name="MATCH_YTD_W_S")
     private String matchYtdWS;
 
+    public Career(PlayerDTO playerDTO){
+      this.crMatchLostD = playerDTO.getCrMatchLostD();
+      this.crMatchLostS = playerDTO.getCrMatchLostS();
+      this.crMatchWinD = playerDTO.getCrMatchWinD();
+      this.crMatchWinS = playerDTO.getCrMatchWinS();
+      this.CrHighD = playerDTO.getCrHighD();
+      this.CrHighS = playerDTO.getCrHighS();
+      this.CrHighDtD = playerDTO.getCrHighDtD();
+      this.CrHighDtS = playerDTO.getCrHighDtS();
+      this.CrPrz = playerDTO.getCrPrz();
+      this.przYtdD = playerDTO.getPrzYtdD();
+      this.przYtdS = playerDTO.getPrzYtdS();
+      this.rankD = playerDTO.getRankD();
+      this.rankS = playerDTO.getRankS();
+      this.CrTitleD = playerDTO.getCrTitleD();
+      this.CrTitleS = playerDTO.getCrTitleS();
+      this.titleYtdD = playerDTO.getTitleYtdD();
+      this.titleYtdS = playerDTO.getTitleYtdS();
+      this.matchYtdLD = playerDTO.getMatchYtdLD();
+      this.matchYtdLS = playerDTO.getMatchYtdLS();
+      this.matchYtdWD = playerDTO.getMatchYtdWD();
+      this.matchYtdWS = playerDTO.getMatchYtdWS();
+    }
 
 }
