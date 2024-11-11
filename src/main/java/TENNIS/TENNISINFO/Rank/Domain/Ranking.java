@@ -1,12 +1,15 @@
 package TENNIS.TENNISINFO.Rank.Domain;
 
 import TENNIS.TENNISINFO.Common.domain.BaseTimeEntity;
+import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +32,9 @@ public class Ranking extends BaseTimeEntity {
     @Column(name = "RANKING")
     private Long ranking;
 
-    @Column(name = "PLAYER_ID", nullable = false)
-    private String playerId;
+    @OneToOne
+    @JoinColumn(name="PLAYER_ID")
+    private Player player;
 
     @Column(name="LIVE_PT")
     private String livePoints;
@@ -45,9 +49,9 @@ public class Ranking extends BaseTimeEntity {
     private String champPt;
 
 
-    public Ranking(RankingDTO dto){
+    public Ranking(RankingDTO dto, Player player){
         this.ranking = Long.parseLong(dto.getRanking());
-        this.playerId = dto.getPlayerId();
+        this.player = player;
         Pattern pattern = Pattern.compile("([+-]?\\d{1,3}(?:,\\d{3})*)");
         Matcher matcher = pattern.matcher(dto.getLivePoints());
         List<String> numbers = new ArrayList<>();

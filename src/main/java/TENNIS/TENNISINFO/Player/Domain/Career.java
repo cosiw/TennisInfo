@@ -33,7 +33,7 @@ public class Career extends BaseTimeEntity {
     private String crMatchLostS;
     @Column(name="CR_MATCH_WIN_D")
     private String crMatchWinD;
-    @Column(name="CR_MATCH_WIN_S>")
+    @Column(name="CR_MATCH_WIN_S")
     private String crMatchWinS;
     @Column(name="CR_HIGH_D")
     private String CrHighD;
@@ -70,15 +70,15 @@ public class Career extends BaseTimeEntity {
     @Column(name="MATCH_YTD_W_S")
     private String matchYtdWS;
 
-    public Career(PlayerDTO playerDTO){
+    public Career(PlayerDTO playerDTO, Player player){
       this.crMatchLostD = playerDTO.getCrMatchLostD();
       this.crMatchLostS = playerDTO.getCrMatchLostS();
       this.crMatchWinD = playerDTO.getCrMatchWinD();
       this.crMatchWinS = playerDTO.getCrMatchWinS();
       this.CrHighD = playerDTO.getCrHighD();
       this.CrHighS = playerDTO.getCrHighS();
-      this.CrHighDtD = playerDTO.getCrHighDtD();
-      this.CrHighDtS = playerDTO.getCrHighDtS();
+      this.CrHighDtD = playerDTO.getCrHighDtD().substring(0,10);
+      this.CrHighDtS = playerDTO.getCrHighDtS().substring(0,10);
       this.CrPrz = playerDTO.getCrPrz();
       this.przYtdD = playerDTO.getPrzYtdD();
       this.przYtdS = playerDTO.getPrzYtdS();
@@ -92,6 +92,7 @@ public class Career extends BaseTimeEntity {
       this.matchYtdLS = playerDTO.getMatchYtdLS();
       this.matchYtdWD = playerDTO.getMatchYtdWD();
       this.matchYtdWS = playerDTO.getMatchYtdWS();
+      this.player = player;
     }
 
 }

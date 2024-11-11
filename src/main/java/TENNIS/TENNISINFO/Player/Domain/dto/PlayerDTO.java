@@ -46,7 +46,7 @@ public class PlayerDTO {
     private String crMatchWinS;
     @JsonProperty("Career high (D)")
     private String CrHighD;
-    @JsonProperty("Career High (S)")
+    @JsonProperty("Career high (S)")
     private String CrHighS;
     @JsonProperty("Date career high (D)")
     private String CrHighDtD;

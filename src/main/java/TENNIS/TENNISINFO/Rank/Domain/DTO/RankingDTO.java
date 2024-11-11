@@ -14,7 +14,7 @@ public class RankingDTO {
     private String ranking;
 
     @JsonProperty("id")
-    private String playerId;
+    private String rapidPlayerId;
 
     @JsonProperty("Live Points")
     private String livePoints;

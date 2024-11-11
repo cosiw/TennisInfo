@@ -1,5 +1,6 @@
 package TENNIS.TENNISINFO.Player.Controller;
 
+import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,10 @@ public class PlayerController {
         try{
             String jsonString = playerService.getPlayerByApi(rapidPlayerId);
 
-            playerService.savePlayer(jsonString, rapidPlayerId);
+            Player player =  playerService.savePlayer(jsonString, rapidPlayerId);
 
-            playerService.saveCareer(jsonString, rapidPlayerId);
+            playerService.saveCareer(jsonString, rapidPlayerId, player);
+
         }catch(Exception ex){
             ex.printStackTrace();
         }

@@ -7,10 +7,11 @@
 -->
 <html>
 	<head>
-		<title>Strongly Typed by HTML5 UP</title>
+		<title>Tennis Info</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css" />
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	</head>
 	<body class="homepage is-preload">
@@ -183,37 +184,8 @@
                                 <th>Points</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Novak Djokovic</td>
-                                <td>Serbia</td>
-                                <td>11,120</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Carlos Alcaraz</td>
-                                <td>Spain</td>
-                                <td>8,535</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Daniil Medvedev</td>
-                                <td>Russia</td>
-                                <td>7,280</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Stefanos Tsitsipas</td>
-                                <td>Greece</td>
-                                <td>5,755</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Andrey Rublev</td>
-                                <td>Russia</td>
-                                <td>5,305</td>
-                            </tr>
+                        <tbody id="rankingTableBody">
+                            
                         </tbody>
                     </table>
 
@@ -298,12 +270,40 @@
 		</div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
+			<!-- <script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.dropotron.min.js"></script>
 			<script src="assets/js/browser.min.js"></script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+			<script src="assets/js/main.js"></script> -->
 
+      <script>
+        $(document).ready(function(){
+			$.ajax({
+				url: 'http://localhost:8085/api/rank/1',  // 호출할 API URL
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+					var tableBody = $('#rankingTableBody');
+					tableBody.empty();
+
+					data.forEach(function(rank) {
+                        var row = '<tr>' +
+							'<td>' + rank.rank + '</td>' + 
+							'<td>' + rank.playerName + '</td>' + 
+							'<td>' + rank.country + '</td>' + 
+							'<td>' + rank.livePt + '</td>' + 
+							'</tr>';
+
+							tableBody.append(row);
+                    });
+                },
+                error: function(error) {
+                    // 오류 처리
+                    console.log(error);
+                }
+			})
+        });
+      </script>
 	</body>
 </html>
