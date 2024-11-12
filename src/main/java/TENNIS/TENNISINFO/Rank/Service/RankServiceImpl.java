@@ -37,7 +37,7 @@ public class RankServiceImpl implements RankService {
     public String getRankingApiData() throws Exception {
         String response ="";
         String param = "live_leaderboard/500";
-        System.out.println("param : " + param);
+
         response = rapidApiConfig.sendUltimateTennisApi(param);
         return response;
     }
@@ -68,5 +68,10 @@ public class RankServiceImpl implements RankService {
         List<Ranking> rankList = rankingRepository.findAll();
 
         return rankList.stream().map(rank -> new RankingResponseDTO(rank)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteRankingData() throws Exception {
+        rankingRepository.deleteAll();
     }
 }

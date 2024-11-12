@@ -6,8 +6,12 @@ import TENNIS.TENNISINFO.Player.Domain.dto.PlayerDTO;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.CareerRepository;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
+import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +31,26 @@ public class PlayerServiceImpl implements PlayerService{
         this.playerRepository = playerRepository;
         this.careerRepository = careerRepository;
     }
+
+    @Override
+    public void DeletePlayerInfoAndCareer() throws Exception {
+
+    }
+
+    @Override
+    public List<String> getRapidIdList(String jsonString) throws Exception {
+        JsonNode rootNode = objectMapper.readTree(jsonString);
+
+        List<String> rapidIdList = new ArrayList<>();
+        JsonNode dataArrayNode = rootNode.path("data");
+
+        for(JsonNode dataNode : dataArrayNode){
+            RankingDTO rankDto = objectMapper.treeToValue(dataNode, RankingDTO.class);
+            rapidIdList.add(rankDto.getRapidPlayerId());
+        }
+        return rapidIdList;
+    }
+
     @Override
     public String getPlayerByApi(String rapidPlayerId) throws Exception{
         String param = "player_info/" + rapidPlayerId;
@@ -52,10 +76,15 @@ public class PlayerServiceImpl implements PlayerService{
 
         PlayerDTO playerDTO = getPlayerDTO(jsonString, rapidPlayerId);
 
-        Career career = new Career(playerDTO, player);
+        Optional<Career> findCareer = careerRepository.findByPlayer(player);
 
-        careerRepository.save(career);
-
+        if(findCareer.isPresent()){
+            Career career = findCareer.get();
+            career.setCareer(playerDTO, player);
+        }else{
+            Career newCareer = new Career(playerDTO, player);
+            careerRepository.save(newCareer);
+        }
 
     }
 

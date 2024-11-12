@@ -11,7 +11,7 @@ import lombok.Setter;
 public class RankingDTO {
 
     @JsonProperty("Rank")
-    private String ranking;
+    private String rank;
 
     @JsonProperty("id")
     private String rapidPlayerId;

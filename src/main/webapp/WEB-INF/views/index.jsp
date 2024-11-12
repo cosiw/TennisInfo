@@ -280,7 +280,7 @@
       <script>
         $(document).ready(function(){
 			$.ajax({
-				url: 'http://localhost:8085/api/rank/1',  // 호출할 API URL
+				url: 'http://localhost:8085/api/rank',  // 호출할 API URL
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {

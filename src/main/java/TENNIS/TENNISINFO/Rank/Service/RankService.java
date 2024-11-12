@@ -7,4 +7,5 @@ public interface RankService {
     String getRankingApiData() throws Exception;
     void saveRankingData(String jsonString) throws Exception;
     List<RankingResponseDTO> getRankingList() throws Exception;
+    void deleteRankingData() throws Exception;
 }

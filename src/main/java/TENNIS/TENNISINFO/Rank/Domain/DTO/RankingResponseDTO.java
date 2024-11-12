@@ -22,7 +22,7 @@ public class RankingResponseDTO {
     public RankingResponseDTO(Ranking ranking){
         this.rankingId = ranking.getRankingId();
         this.rapidPlayerId = ranking.getPlayer().getRapidPlayerId();
-        this.rank = ranking.getRanking();
+        this.rank = ranking.getRank();
         this.playerName = ranking.getPlayer().getPlayerName();
         this.country = ranking.getPlayer().getCountry();
         this.livePt = ranking.getLivePoints();

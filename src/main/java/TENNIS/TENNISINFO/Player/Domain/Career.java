@@ -12,10 +12,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "career")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Career extends BaseTimeEntity {
 
@@ -93,6 +95,35 @@ public class Career extends BaseTimeEntity {
       this.matchYtdWD = playerDTO.getMatchYtdWD();
       this.matchYtdWS = playerDTO.getMatchYtdWS();
       this.player = player;
+    }
+
+    public Career setCareer(PlayerDTO playerDTO, Player player){
+        Career career = new Career();
+        career.crMatchLostD = playerDTO.getCrMatchLostD();
+        career.crMatchLostS = playerDTO.getCrMatchLostS();
+        career.crMatchWinD = playerDTO.getCrMatchWinD();
+        career.crMatchWinS = playerDTO.getCrMatchWinS();
+        career.CrHighD = playerDTO.getCrHighD();
+        career.CrHighS = playerDTO.getCrHighS();
+        career.CrHighDtD = playerDTO.getCrHighDtD().substring(0,10);
+        career.CrHighDtS = playerDTO.getCrHighDtS().substring(0,10);
+        career.CrPrz = playerDTO.getCrPrz();
+        career.przYtdD = playerDTO.getPrzYtdD();
+        career.przYtdS = playerDTO.getPrzYtdS();
+        career.rankD = playerDTO.getRankD();
+        career.rankS = playerDTO.getRankS();
+        career.CrTitleD = playerDTO.getCrTitleD();
+        career.CrTitleS = playerDTO.getCrTitleS();
+        career.titleYtdD = playerDTO.getTitleYtdD();
+        career.titleYtdS = playerDTO.getTitleYtdS();
+        career.matchYtdLD = playerDTO.getMatchYtdLD();
+        career.matchYtdLS = playerDTO.getMatchYtdLS();
+        career.matchYtdWD = playerDTO.getMatchYtdWD();
+        career.matchYtdWS = playerDTO.getMatchYtdWS();
+        career.player = player;
+
+
+        return career;
     }
 
 }

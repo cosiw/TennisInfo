@@ -29,8 +29,8 @@ public class Ranking extends BaseTimeEntity {
     @Column(name="RANKING_ID")
     private Long rankingId;
 
-    @Column(name = "RANKING")
-    private Long ranking;
+    @Column(name = "RANK_CUR")
+    private Long rank;
 
     @OneToOne
     @JoinColumn(name="PLAYER_ID")
@@ -50,7 +50,7 @@ public class Ranking extends BaseTimeEntity {
 
 
     public Ranking(RankingDTO dto, Player player){
-        this.ranking = Long.parseLong(dto.getRanking());
+        this.rank = Long.parseLong(dto.getRank());
         this.player = player;
         Pattern pattern = Pattern.compile("([+-]?\\d{1,3}(?:,\\d{3})*)");
         Matcher matcher = pattern.matcher(dto.getLivePoints());
