@@ -5,17 +5,23 @@ import TENNIS.TENNISINFO.Player.Domain.dto.PlayerDTO;
 import TENNIS.TENNISINFO.Player.Domain.dto.SNS;
 import TENNIS.TENNISINFO.Player.Domain.Enum.BackHandType;
 import TENNIS.TENNISINFO.Player.Domain.Enum.ForeHandType;
+import TENNIS.TENNISINFO.Rank.Domain.Ranking;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "player")
@@ -56,6 +62,12 @@ public class Player extends BaseTimeEntity {
     private String instagram;
     @Column(name="SNS2")
     private String Tweeter;
+
+    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY)
+    private Career career;
+
+    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY)
+    private Ranking ranking;
 
     public Player(PlayerDTO playerDTO){
         this.rapidPlayerId = playerDTO.getRapidPlayerId();

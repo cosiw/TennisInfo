@@ -33,7 +33,7 @@ public class Ranking extends BaseTimeEntity {
     private Long rank;
 
     @OneToOne
-    @JoinColumn(name="PLAYER_ID")
+    @JoinColumn(name = "PLAYER_ID")
     private Player player;
 
     @Column(name="LIVE_PT")

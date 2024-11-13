@@ -27,7 +27,7 @@ public class Career extends BaseTimeEntity {
     private Long crId;
 
     @OneToOne
-    @JoinColumn(name="PLAYER_ID")
+    @JoinColumn(name = "PLAYER_ID")
     private Player player;
     @Column(name="CR_MATCH_LOST_D")
     private String crMatchLostD;

@@ -83,7 +83,7 @@ input, select, textarea {
 	}
 
 	body {
-		background: #f0f0f0;
+		background: white;
 	}
 
 		body.is-preload *, body.is-preload *:before, body.is-preload *:after {
@@ -100,9 +100,9 @@ input, select, textarea {
 	body, input, textarea, select {
 		font-family: 'Source Sans Pro';
 		font-weight: 300;
-		color: #777;
+		color: #888;
 		line-height: 1.65em;
-		font-size: 15pt;
+		font-size: 20pt;
 	}
 
 	h1, h2, h3, h4, h5, h6 {
@@ -1740,9 +1740,9 @@ input, select, textarea {
 		}
 
 		table thead {
-			background: #878787;
-			color: #fff;
-			font-weight: 400;
+			background: #CCFF00;
+			color: #000000;
+			font-weight: 500;
 			text-transform: uppercase;
 			border: 0;
 			box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);

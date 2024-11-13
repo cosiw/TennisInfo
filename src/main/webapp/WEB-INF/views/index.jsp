@@ -7,11 +7,13 @@
 -->
 <html>
 	<head>
+		<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 		<title>Tennis Info</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css" />
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		
 
 	</head>
 	<body class="homepage is-preload">
@@ -62,116 +64,24 @@
 							<h2>랭킹 정보</h2>
 						</header>
 						<div class="row aln-center">
-							<div class="col-4 col-6-medium col-12-small">
-
-								<!-- Feature -->
-									<section>
-										<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
-										<header>
-											<h3>Okay, so what is this?</h3>
-										</header>
-										<p>This is <strong>Strongly Typed</strong>, a free, fully responsive site template
-										by <a href="http://html5up.net">HTML5 UP</a>. Free for personal and commercial use under the
-										<a href="http://html5up.net/license">CCA 3.0 license</a>.</p>
-									</section>
-
-							</div>
-							<div class="col-4 col-6-medium col-12-small">
-
-								<!-- Feature -->
-									<section>
-										<a href="#" class="image featured"><img src="images/pic02.jpg" alt="" /></a>
-										<header>
-											<h3>Nice! What is HTML5 UP?</h3>
-										</header>
-										<p><a href="http://html5up.net">HTML5 UP</a> is a side project of <a href="http://twitter.com/ajlkn">AJ’s</a> (= me).
-										I started it as a way to both test my responsive tools and sharpen up my coding
-										and design skills a bit.</p>
-									</section>
-
-							</div>
-							<div class="col-4 col-6-medium col-12-small">
-
-								<!-- Feature -->
-									<section>
-										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-										<header>
-											<h3>What's this built with?</h3>
-										</header>
-										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-									</section>
-
-							</div>
-							<div class="col-4 col-6-medium col-12-small">
-
-              								<!-- Feature -->
-              									<section>
-              										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-              										<header>
-              											<h3>What's this built with?</h3>
-              										</header>
-              										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-              										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-              									</section>
-
-              	</div>
-              	<div class="col-4 col-6-medium col-12-small">
-
-                								<!-- Feature -->
-                									<section>
-                										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-                										<header>
-                											<h3>What's this built with?</h3>
-                										</header>
-                										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-                										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-                									</section>
-
-                </div>
-                <div class="col-4 col-6-medium col-12-small">
-
-                								<!-- Feature -->
-                									<section>
-                										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-                										<header>
-                											<h3>What's this built with?</h3>
-                										</header>
-                										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-                										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-                									</section>
-
-                </div>
-                <div class="col-4 col-6-medium col-12-small">
-
-                                								<!-- Feature -->
-                                									<section>
-                                										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-                                										<header>
-                                											<h3>What's this built with?</h3>
-                                										</header>
-                                										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-                                										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-                                									</section>
-
-                </div>
-                                <div class="col-4 col-6-medium col-12-small">
-
-                                								<!-- Feature -->
-                                									<section>
-                                										<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-                                										<header>
-                                											<h3>What's this built with?</h3>
-                                										</header>
-                                										<p><strong>Responsive Tools</strong> is a simple set of tools for building responsive
-                                										sites and apps. All of my templates at <a href="http://html5up.net">HTML5 UP</a> are built using these tools.</p>
-                                									</section>
-
-                </div>
+							<c:forEach var="player" items="${players}">
+									<div class="col-4 col-6-medium col-12-small">
+										<section>
+											<a href="#" class="image featured">
+												<img src='${player.image}' alt="" />
+											</a>
+											<h3>${player.playerName}</h3>
+											<p style="text-align: left;">
+												현재랭킹: ${player.rank} </br>
+												타이틀 (싱글): 0 </br>
+												상금: ${player.przYtdS} </br>
+												승/패 (승률): </p>
+										</section>
+									</div>
+							</c:forEach>
 						</div>
 					</div>
 				</section>
-
 
 			<!-- Main -->
 			<div class="container">
@@ -280,7 +190,7 @@
       <script>
         $(document).ready(function(){
 			$.ajax({
-				url: 'http://localhost:8085/api/rank',  // 호출할 API URL
+				url: 'http://localhost:8085/rankList',  // 호출할 API URL
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
@@ -304,6 +214,37 @@
                 }
 			})
         });
+		console.log("hi : ", )
+		// $(document).ready(function(){
+		// 	$.ajax({
+		// 		url: 'http://localhost:8085/api/rank/top',  // 호출할 API URL
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+		// 			let html = '';
+		// 			console.log("data :", data);
+		// 			data.forEach(rank => {
+        //                 html += `
+		// 				<section>
+		// 				<a href="#" class="image featured">
+        //                     <img src= ${rank.image} alt="" />
+        //                 </a>
+        //                 <h3>${rank.playerName}</h3>
+        //                 <p style="text-align: left;">
+        //                     현재랭킹: ${rank.rank} </br>
+        //                     타이틀 (싱글): ${player.titles} </br>
+        //                     상금: ${rank.przYtdS} </br>
+        //                     승/패 (승률): ${rank.matchYtdWS}/${rank.matchYtdLS}(${winRate})</p>
+        //             	</section>`;
+        //             });
+		// 			$('#player-info').html(html);
+        //         },
+        //         error: function(error) {
+        //             // 오류 처리
+        //             console.log(error);
+        //         }
+		// 	})
+        // });
       </script>
 	</body>
 </html>
