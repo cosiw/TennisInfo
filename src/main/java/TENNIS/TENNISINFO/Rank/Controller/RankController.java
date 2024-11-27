@@ -26,7 +26,7 @@ public class RankController {
 
         this.rankService = rankService;
     }
-    @PostMapping("")
+    @PostMapping("/save")
     public ResponseEntity saveRanking(){
         String response = "";
         try{
@@ -45,7 +45,7 @@ public class RankController {
     public ResponseEntity getRankingList(){
         List<RankingResponseDTO> rankingList = new ArrayList<>();
         try{
-            //rankingList = rankService.getRankingList();
+            rankingList = rankService.getRankingList();
         }catch(Exception e){
             System.out.println(e.toString());
         }
@@ -65,9 +65,9 @@ public class RankController {
         return "index";
     }
 
-    @GetMapping("/test1")
+    @GetMapping("/player/{id}")
     public String test1(){
         System.out.println("test");
-        return "test";
+        return "player";
     }
 }
