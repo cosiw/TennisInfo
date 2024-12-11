@@ -34,28 +34,28 @@ public class TopRankingResponseDTO {
 
 
     public TopRankingResponseDTO(Player p){
-        this.playerId = p.getPlayerId();
-        this.rapidPlayerId = p.getRapidPlayerId();
-        this.playerName = p.getPlayerName();
-        this.birth = p.getBirth();
-        this.country = p.getCountry();
-        this.debutYear = p.getDebutYear();
-        this.image = p.getImage();
-        this.instagram = p.getInstagram();
-        this.tweeter = p.getTweeter();
-        this.rankS = p.getCareer().getRankS();
-        this.crPrz = p.getCareer().getCrPrz();
-        this.przYtdS = p.getCareer().getPrzYtdS();
-        this.titleYtdS = p.getCareer().getTitleYtdS();
-        this.matchYtdLs = p.getCareer().getMatchYtdLS();
-        this.matchYtdWs = p.getCareer().getMatchYtdWS();
-        this.rank = p.getRanking().getRank();
-        this.livePoints = p.getRanking().getLivePoints();
-        this.rankDiff = p.getRanking().getRankDiff();
-        this.nextWinPt = p.getRanking().getNextWinPt();
-        this.champPt = p.getRanking().getChampPt();
-
-        this.winRate = String.format("%.2f",(Double.parseDouble(this.matchYtdWs) * 100 / (Double.parseDouble(this.matchYtdWs) + Double.parseDouble(this.matchYtdLs))));
+//        this.playerId = p.getPlayerId();
+//        this.rapidPlayerId = p.getRapidPlayerId();
+//        this.playerName = p.getPlayerName();
+//        this.birth = p.getBirth();
+//        this.country = p.getCountry();
+//        this.debutYear = p.getDebutYear();
+//        this.image = p.getImage();
+//        this.instagram = p.getInstagram();
+//        this.tweeter = p.getTweeter();
+//        this.rankS = p.getCareer().getRankS();
+//        this.crPrz = p.getCareer().getCrPrz();
+//        this.przYtdS = p.getCareer().getPrzYtdS();
+//        this.titleYtdS = p.getCareer().getTitleYtdS();
+//        this.matchYtdLs = p.getCareer().getMatchYtdLS();
+//        this.matchYtdWs = p.getCareer().getMatchYtdWS();
+//        this.rank = p.getRanking().getRank();
+//        this.livePoints = p.getRanking().getLivePoints();
+//        this.rankDiff = p.getRanking().getRankDiff();
+//        this.nextWinPt = p.getRanking().getNextWinPt();
+//        this.champPt = p.getRanking().getChampPt();
+//
+//        this.winRate = String.format("%.2f",(Double.parseDouble(this.matchYtdWs) * 100 / (Double.parseDouble(this.matchYtdWs) + Double.parseDouble(this.matchYtdLs))));
 
     }
 }

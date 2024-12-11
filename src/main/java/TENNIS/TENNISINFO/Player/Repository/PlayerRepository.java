@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findByRapidPlayerId(String rapidPlayerId);
 
-    @Query("SELECT p FROM Player p JOIN p.ranking r JOIN p.career c WHERE r.rank <= :rank ORDER BY r.rank ASC")
-    List<Player> findPlayersByRankLessThanEqual(@Param("rank") int rank);
+//    @Query("SELECT p FROM Player p JOIN p.ranking r JOIN p.career c WHERE r.rank <= :rank ORDER BY r.rank ASC")
+//    List<Player> findPlayersByRankLessThanEqual(@Param("rank") int rank);
 }

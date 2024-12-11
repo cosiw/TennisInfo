@@ -1,5 +1,6 @@
 package TENNIS.TENNISINFO.Rank.Controller;
 
+import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingResponseDTO;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.TopRankingResponseDTO;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RankController {
 
     private final RankService rankService;
+    private final RankingApiClient rankingApi;
 
     @Autowired
-    public RankController(RankService rankService){
+    public RankController(RankService rankService, RankingApiClient rankingApi){
 
         this.rankService = rankService;
+        this.rankingApi = rankingApi;
     }
     @PostMapping("/save")
     public ResponseEntity saveRanking(){
@@ -45,12 +48,13 @@ public class RankController {
     public ResponseEntity getRankingList(){
         List<RankingResponseDTO> rankingList = new ArrayList<>();
         try{
-            rankingList = rankService.getRankingList();
+            //rankingList = rankService.getRankingList();
+            rankingApi.atpRankings();
         }catch(Exception e){
             System.out.println(e.toString());
         }
 
-        return new ResponseEntity(rankingList,HttpStatus.OK);
+        return new ResponseEntity("",HttpStatus.OK);
     }
 
     @GetMapping("/")

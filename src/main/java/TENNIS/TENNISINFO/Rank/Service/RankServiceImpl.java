@@ -79,7 +79,8 @@ public class RankServiceImpl implements RankService {
 
     @Override
     public List<TopRankingResponseDTO> getTopRankingList() throws Exception {
-        List<Player> playerList = playerRepository.findPlayersByRankLessThanEqual(10);
+        //List<Player> playerList = playerRepository.findPlayersByRankLessThanEqual(10);
+        List<Player> playerList = new ArrayList<>();
         List<TopRankingResponseDTO> topRankingList = new ArrayList<>();
         for(Player p : playerList){
             TopRankingResponseDTO responseDTO = new TopRankingResponseDTO(p);

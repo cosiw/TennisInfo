@@ -33,7 +33,6 @@ public class Player extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="PLAYER_ID")
     private Long playerId;
-
     @Column(name="RAPID_PLAYER_ID")
     private String rapidPlayerId;
     @Column(name="PLAYER_NAME")
@@ -42,50 +41,27 @@ public class Player extends BaseTimeEntity {
     private String birth;
     @Column(name="COUNTRY")
     private String country;
-    @Column(name="DEBUT_YEAR")
-    private String debutYear;
+    @Column(name="TURNED_PRO")
+    private String turnedPro;
     @Column(name="WEIGHT")
     private String weight;
     @Column(name="HEIGHT")
     private String height;
-    @Column(name="FOREHAND")
-    @Enumerated(EnumType.STRING)
-    private ForeHandType foreHand;
-    @Column(name="BACKHAND")
-    @Enumerated(EnumType.STRING)
-    private BackHandType backHand;
-    @Column(name="COACH")
-    private String coach;
     @Column(name="IMAGE")
     private String image;
-    @Column(name="SNS1")
-    private String instagram;
-    @Column(name="SNS2")
-    private String Tweeter;
-
-    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY)
-    private Career career;
-
-    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY)
-    private Ranking ranking;
+    @Column(name="GENDER")
+    private String gender;
 
     public Player(PlayerDTO playerDTO){
         this.rapidPlayerId = playerDTO.getRapidPlayerId();
         this.playerName = playerDTO.getName() + " " + playerDTO.getSurName();
         this.birth = playerDTO.getBirth().substring(0,10);
         this.country = playerDTO.getCountry();
-        this.debutYear = playerDTO.getDebutYear();
+        this.turnedPro = playerDTO.getDebutYear();
         this.weight = playerDTO.getWeight();
         this.height = playerDTO.getHeight();
-        this.foreHand = ForeHandType.fromString(playerDTO.getForeHand());
-        this.backHand = BackHandType.fromString(playerDTO.getBackHand().getVal());
-        this.coach = playerDTO.getCoach();
         this.image = playerDTO.getImage();
+        //this.gender = playerDTO.getGen
 
-        List<SNS> snsList = playerDTO.getSnsList();
-        for(SNS sns : snsList){
-            if(sns.getId().equals("IG")) this.instagram = sns.getLink();
-            else this.Tweeter = sns.getLink();
-        }
     }
 }
