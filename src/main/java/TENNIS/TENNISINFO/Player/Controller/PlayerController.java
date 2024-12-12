@@ -45,30 +45,30 @@ public class PlayerController {
     public ResponseEntity saveAllPlayer(){
         try{
             // 랭킹 정보 API 조회
-            String rankStr = rankService.getRankingApiData();
-            // rapidId List화
-            List<String> rapidIdList = playerService.getRapidIdList(rankStr);
-            // 랭킹은 모두 DELETE 후 INSERT
-            rankService.deleteRankingData();
-
-            rapidIdList.stream().forEach(id -> {
-                try{
-                    Thread.sleep(1000);
-                    // Player API 조회
-                    String jsonString = playerService.getPlayerByApi(id);
-
-                    // Player INSERT (DB에 없는 데이터만 INSERT)
-                    Player player = playerService.savePlayer(jsonString, id);
-
-                    // Career INSERT OR UPDATE
-                    playerService.saveCareer(jsonString, id, player);
-
-                }catch(Exception ex){
-                    System.out.println("forEach Catch " + ex.getMessage());
-                }
-            });
-            // RANKING INSERT
-            rankService.saveRankingData(rankStr);
+//            String rankStr = rankService.getRankingApiData();
+//            // rapidId List화
+//            List<String> rapidIdList = playerService.getRapidIdList(rankStr);
+//            // 랭킹은 모두 DELETE 후 INSERT
+//            rankService.deleteRankingData();
+//
+//            rapidIdList.stream().forEach(id -> {
+//                try{
+//                    Thread.sleep(1000);
+//                    // Player API 조회
+//                    String jsonString = playerService.getPlayerByApi(id);
+//
+//                    // Player INSERT (DB에 없는 데이터만 INSERT)
+//                    Player player = playerService.savePlayer(jsonString, id);
+//
+//                    // Career INSERT OR UPDATE
+//                    playerService.saveCareer(jsonString, id, player);
+//
+//                }catch(Exception ex){
+//                    System.out.println("forEach Catch " + ex.getMessage());
+//                }
+//            });
+//            // RANKING INSERT
+//            rankService.saveRankingData(rankStr);
 
 
         }catch(Exception ex){

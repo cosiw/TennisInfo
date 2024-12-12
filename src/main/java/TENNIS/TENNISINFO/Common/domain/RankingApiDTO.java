@@ -1,19 +1,16 @@
 package TENNIS.TENNISINFO.Common.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class RankingApiDTO {
     @JsonProperty("team")
-    private PlayerApiDTO team;
+    private PlayerRapidDTO team;
     @JsonProperty("ranking")
     private Long curRank;
     @JsonProperty("previousRanking")

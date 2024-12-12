@@ -1,6 +1,9 @@
 package TENNIS.TENNISINFO.Rank.Service;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
+import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.RankingApiDTO;
+import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingResponseDTO;
@@ -28,65 +31,37 @@ public class RankServiceImpl implements RankService {
     private PlayerRepository playerRepository;
 
     private RapidApiConfig rapidApiConfig;
+    private PlayerApiClient playerApiClient;
     @Autowired
-    public RankServiceImpl(RankingRepository rankingRepository, PlayerRepository playerRepository, RapidApiConfig rapidApiConfig, ObjectMapper objectMapper){
+    public RankServiceImpl(RankingRepository rankingRepository, PlayerRepository playerRepository, RapidApiConfig rapidApiConfig, ObjectMapper objectMapper, PlayerApiClient playerApiClient){
         this.rankingRepository = rankingRepository;
         this.playerRepository = playerRepository;
         this.rapidApiConfig = rapidApiConfig;
         this.objectMapper = objectMapper;
-    }
-    @Override
-    public String getRankingApiData() throws Exception {
-        String response ="";
-        String param = "live_leaderboard/500";
-
-        response = rapidApiConfig.sendUltimateTennisApi(param);
-        return response;
+        this.playerApiClient = playerApiClient;
     }
 
+
     @Override
-    public void saveRankingData(String jsonString) throws Exception {
+    public List<PlayerRapidDTO> getPlayerList(List<RankingApiDTO> rankingList) throws Exception {
 
-        JsonNode rootNode = objectMapper.readTree(jsonString);
+        return rankingList.stream()
+                .map(rank -> {
+                    try{
+                        return playerApiClient.teamDetails(rank.getTeam().getPlayerRapidId());
+                    }catch(Exception e){
+                        throw new RuntimeException("API 호출 실패", e);
+                    }
+                }).collect(Collectors.toList());
+    }
 
-        JsonNode dataArrayNode = rootNode.path("data");
-
-        for(JsonNode dataNode : dataArrayNode){
-
-            RankingDTO rankDto = objectMapper.treeToValue(dataNode, RankingDTO.class);
-
-            playerRepository.findByRapidPlayerId(rankDto.getRapidPlayerId())
-                .map(entity -> {
-                   Ranking rank = new Ranking(rankDto, entity);
-                   return rankingRepository.save(rank);
-                });
-
-        }
+    @Override
+    public void savePlayerList(List<PlayerRapidDTO> playerList) throws Exception {
 
     }
 
     @Override
-    public List<RankingResponseDTO> getRankingList() throws Exception {
-        List<Ranking> rankList = rankingRepository.findAll();
+    public void saveRanking(List<RankingApiDTO> rankingList, List<PlayerRapidDTO> playerList) throws Exception {
 
-        return rankList.stream().map(rank -> new RankingResponseDTO(rank)).collect(Collectors.toList());
-    }
-
-    @Override
-    public void deleteRankingData() throws Exception {
-        rankingRepository.deleteAll();
-    }
-
-    @Override
-    public List<TopRankingResponseDTO> getTopRankingList() throws Exception {
-        //List<Player> playerList = playerRepository.findPlayersByRankLessThanEqual(10);
-        List<Player> playerList = new ArrayList<>();
-        List<TopRankingResponseDTO> topRankingList = new ArrayList<>();
-        for(Player p : playerList){
-            TopRankingResponseDTO responseDTO = new TopRankingResponseDTO(p);
-            topRankingList.add(responseDTO);
-        }
-
-        return topRankingList;
     }
 }

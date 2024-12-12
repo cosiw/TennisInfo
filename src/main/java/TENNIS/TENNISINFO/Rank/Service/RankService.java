@@ -1,14 +1,14 @@
 package TENNIS.TENNISINFO.Rank.Service;
 
+import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.RankingApiDTO;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingResponseDTO;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.TopRankingResponseDTO;
 import java.util.List;
 
 public interface RankService {
-    String getRankingApiData() throws Exception;
-    void saveRankingData(String jsonString) throws Exception;
-    List<RankingResponseDTO> getRankingList() throws Exception;
-    void deleteRankingData() throws Exception;
 
-    List<TopRankingResponseDTO> getTopRankingList() throws Exception;
+    List<PlayerRapidDTO> getPlayerList(List<RankingApiDTO> rankingList) throws Exception;
+    void savePlayerList(List<PlayerRapidDTO> playerList) throws Exception;
+    void saveRanking(List<RankingApiDTO> rankingList, List<PlayerRapidDTO> playerList) throws Exception;
 }

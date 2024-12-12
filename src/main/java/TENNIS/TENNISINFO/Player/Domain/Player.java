@@ -1,6 +1,7 @@
 package TENNIS.TENNISINFO.Player.Domain;
 
 import TENNIS.TENNISINFO.Common.domain.BaseTimeEntity;
+import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Player.Domain.dto.PlayerDTO;
 import TENNIS.TENNISINFO.Player.Domain.dto.SNS;
 import TENNIS.TENNISINFO.Player.Domain.Enum.BackHandType;
@@ -52,15 +53,15 @@ public class Player extends BaseTimeEntity {
     @Column(name="GENDER")
     private String gender;
 
-    public Player(PlayerDTO playerDTO){
-        this.rapidPlayerId = playerDTO.getRapidPlayerId();
-        this.playerName = playerDTO.getName() + " " + playerDTO.getSurName();
-        this.birth = playerDTO.getBirth().substring(0,10);
-        this.country = playerDTO.getCountry();
-        this.turnedPro = playerDTO.getDebutYear();
-        this.weight = playerDTO.getWeight();
-        this.height = playerDTO.getHeight();
-        this.image = playerDTO.getImage();
+    public Player(PlayerRapidDTO playerRapidDTO){
+        this.rapidPlayerId = playerRapidDTO.getPlayerRapidId();
+        this.playerName = playerRapidDTO.getPlayerName();
+        this.birth = playerRapidDTO.getBirthDate();
+        this.country = playerRapidDTO.getBirthPlace();
+        this.turnedPro = playerRapidDTO.getTurnedPro();
+        this.weight = playerRapidDTO.getWeight();
+        this.height = playerRapidDTO.getHeight();
+        //this.image = playerRapidDTO.getImage();
         //this.gender = playerDTO.getGen
 
     }

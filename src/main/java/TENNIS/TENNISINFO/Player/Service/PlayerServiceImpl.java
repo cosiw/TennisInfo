@@ -60,15 +60,16 @@ public class PlayerServiceImpl implements PlayerService{
 
     @Override
     public Player savePlayer(String jsonString, String rapidPlayerId) throws Exception{
-        PlayerDTO playerDTO = getPlayerDTO(jsonString, rapidPlayerId);
-
-        Player findPlayer = playerRepository.findByRapidPlayerId(rapidPlayerId)
-            .orElseGet(() -> {
-                Player newPlayer = new Player(playerDTO);
-                return playerRepository.save(newPlayer);
-            });
-
-        return findPlayer;
+//        PlayerDTO playerDTO = getPlayerDTO(jsonString, rapidPlayerId);
+//
+//        Player findPlayer = playerRepository.findByRapidPlayerId(rapidPlayerId)
+//            .orElseGet(() -> {
+//                Player newPlayer = new Player(playerDTO);
+//                return playerRepository.save(newPlayer);
+//            });
+//
+//        return findPlayer;
+        return null;
     }
 
     @Override
