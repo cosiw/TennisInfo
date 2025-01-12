@@ -1,7 +1,7 @@
 package TENNIS.TENNISINFO.Rank.Controller;
 
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.RankingApiDTO;
+import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingResponseDTO;
@@ -35,9 +35,6 @@ public class RankController {
         this.playerApi = playerApi;
     }
 
-
-
-
     @GetMapping("/player/{rapidPlayerId}/image")
     public void getTopRanking(@PathVariable String rapidPlayerId){
         try{
@@ -64,12 +61,13 @@ public class RankController {
 
         try{
             // 랭킹 리스트 API 호출
-            List<RankingApiDTO> rankingList = rankingApi.atpRankings();
+            List<RankingRapidDTO> rankingList = rankingApi.atpRankings();
 
             // 랭킹에서 선수들 API 호출
             List<PlayerRapidDTO> playerList = rankService.getPlayerList(rankingList);
 
             // 선수 정보 insert
+            rankService.savePlayerList(playerList);
 
             // 랭킹 정보 insert
 

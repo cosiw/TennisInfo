@@ -75,12 +75,27 @@ public class RapidApiConfig {
 
             HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[1024];
             System.out.println(response.body());
             InputStream inputStream = response.body();
+            int bytesRead;
+            while((bytesRead = inputStream.read(data,0, data.length )) != -1){
+                buffer.write(data, 0, bytesRead);
+            }
 
-            byte[] imageData = inputStream.readAllBytes();
-            try (FileOutputStream fos = new FileOutputStream("downloaded_image.png")) {
-                fos.write(imageData);
+            byte[] responseBytes = buffer.toByteArray();
+
+            String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
+
+            String fileName = "save_image.png";
+
+            File imageFile = new File(desktopPath + File.separator + fileName);
+            try(FileOutputStream fos = new FileOutputStream(imageFile)){
+                fos.write(responseBytes);
+                System.out.println("이미지 저장 성공");
+            }catch(IOException e){
+                System.err.println("이미지 저장 중 오류 발생 " + e.getMessage());
             }
 
 

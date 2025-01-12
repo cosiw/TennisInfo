@@ -2,7 +2,7 @@ package TENNIS.TENNISINFO.Common.rapid;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.RankingApiDTO;
+import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;

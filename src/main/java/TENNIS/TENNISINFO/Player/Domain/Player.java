@@ -27,6 +27,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "player")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Player extends BaseTimeEntity {
 
@@ -48,10 +49,14 @@ public class Player extends BaseTimeEntity {
     private String weight;
     @Column(name="HEIGHT")
     private String height;
+    @Column(name="PLAYS")
+    private String plays;
+    @Column(name="PRIZE_CURRENT")
+    private Long prizeCurrent;
+    @Column(name="PRIZE_TOTAL")
+    private Long prizeTotal;
     @Column(name="IMAGE")
     private String image;
-    @Column(name="GENDER")
-    private String gender;
 
     public Player(PlayerRapidDTO playerRapidDTO){
         this.rapidPlayerId = playerRapidDTO.getPlayerRapidId();
@@ -61,8 +66,8 @@ public class Player extends BaseTimeEntity {
         this.turnedPro = playerRapidDTO.getTurnedPro();
         this.weight = playerRapidDTO.getWeight();
         this.height = playerRapidDTO.getHeight();
-        //this.image = playerRapidDTO.getImage();
-        //this.gender = playerDTO.getGen
-
+        this.plays = playerRapidDTO.getPlays();
+        this.prizeCurrent = playerRapidDTO.getPrizeCurrent();
+        this.prizeTotal = playerRapidDTO.getPrizeTotal();
     }
 }

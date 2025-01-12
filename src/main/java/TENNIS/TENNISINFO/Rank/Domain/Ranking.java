@@ -1,6 +1,7 @@
 package TENNIS.TENNISINFO.Rank.Domain;
 
 import TENNIS.TENNISINFO.Common.domain.BaseTimeEntity;
+import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Rank.Domain.DTO.RankingDTO;
 import jakarta.persistence.Column;
@@ -41,29 +42,17 @@ public class Ranking extends BaseTimeEntity {
     private String curPoints;
     @Column(name="PRE_POINTS")
     private String prePoints;
+    @Column(name="RANKING_LAST_UPDATED")
+    private String lastUpdate;
 
+    public Ranking(RankingRapidDTO rapidDTO, Player player){
 
-    public Ranking(RankingDTO dto, Player player){
-//        this.rank = Long.parseLong(dto.getRank());
-//        this.player = player;
-//        Pattern pattern = Pattern.compile("([+-]?\\d{1,3}(?:,\\d{3})*)");
-//        Matcher matcher = pattern.matcher(dto.getLivePoints());
-//        List<String> numbers = new ArrayList<>();
-//
-//        while(matcher.find()){
-//            numbers.add(matcher.group());
-//        }
-//        for (int i = 0; i < numbers.size(); i++) {
-//            if (i % 2 == 0) {
-//                this.livePoints = numbers.get(i);
-//            } else {
-//                this.pointsDiff = numbers.get(i);
-//            }
-//        }
-//
-//
-//        this.rankDiff = dto.getRankDiff();
-//        this.nextWinPt = dto.getNextWinPt().equals("-")?  "0" : dto.getNextWinPt();
-//        this.champPt = dto.getChampPt().equals("-")?  "0" : dto.getChampPt();
+        this.player = player;
+        this.curRank = rapidDTO.getCurRank();
+        this.preRank = rapidDTO.getPreRank();
+        this.bestRank = rapidDTO.getBestRank();
+        this.curPoints = rapidDTO.getPoint();
+        this.lastUpdate = rapidDTO.getUpdateTime();
+
     }
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RankingApiDTO {
+public class RankingRapidDTO {
     @JsonProperty("team")
     private PlayerRapidDTO team;
     @JsonProperty("ranking")
@@ -16,10 +16,11 @@ public class RankingApiDTO {
     @JsonProperty("previousRanking")
     private Long preRank;
     @JsonProperty("points")
-    private Long point;
+    private String point;
     @JsonProperty("bestRanking")
     private Long bestRank;
-    private Long updateTime;
+    @JsonProperty("updateAtTimestamp")
+    private String updateTime;
 
 
 }

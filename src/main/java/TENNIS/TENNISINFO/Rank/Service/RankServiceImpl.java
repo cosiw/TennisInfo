@@ -2,7 +2,8 @@ package TENNIS.TENNISINFO.Rank.Service;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.RankingApiDTO;
+
+import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
@@ -43,8 +44,7 @@ public class RankServiceImpl implements RankService {
 
 
     @Override
-    public List<PlayerRapidDTO> getPlayerList(List<RankingApiDTO> rankingList) throws Exception {
-
+    public List<PlayerRapidDTO> getPlayerList(List<RankingRapidDTO> rankingList) throws Exception {
         return rankingList.stream()
                 .map(rank -> {
                     try{
@@ -61,7 +61,7 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public void saveRanking(List<RankingApiDTO> rankingList, List<PlayerRapidDTO> playerList) throws Exception {
+    public void saveRanking(List<RankingRapidDTO> rankingList, List<PlayerRapidDTO> playerList) throws Exception {
 
     }
 }
