@@ -1,7 +1,11 @@
 package TENNIS.TENNISINFO.Common.Service;
 
+import TENNIS.TENNISINFO.Category.Domain.Category;
+import TENNIS.TENNISINFO.Category.Repository.CategoryRepository;
+import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
+import TENNIS.TENNISINFO.Common.rapid.CategoryApiClient;
 import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
@@ -22,14 +26,21 @@ public class MasterServiceImpl implements MasterService{
 
     private final RankingApiClient rankingApi;
     private final PlayerApiClient playerApi;
+    private final CategoryApiClient categoryApi;
     private final PlayerRepository playerRepository;
     private final RankingRepository rankingRepository;
+    private final CategoryRepository categoryRepository;
 
-    public MasterServiceImpl(RankingApiClient rankingApi, PlayerApiClient playerApi, PlayerRepository playerRepository, RankingRepository rankingRepository){
+    public MasterServiceImpl(RankingApiClient rankingApi, PlayerApiClient playerApi,
+                             PlayerRepository playerRepository, RankingRepository rankingRepository,
+                             CategoryApiClient categoryApi, CategoryRepository categoryRepository){
         this.rankingApi = rankingApi;
         this.playerApi = playerApi;
+        this.categoryApi = categoryApi;
         this.playerRepository = playerRepository;
         this.rankingRepository = rankingRepository;
+        this.categoryRepository = categoryRepository;
+
     }
     @Override
     @Transactional
@@ -97,6 +108,28 @@ public class MasterServiceImpl implements MasterService{
         System.out.println("저장되지 않은 데이터(playerRapidId)");
         noData.forEach(p -> System.out.println(p));
 
+    }
+
+    @Override
+    public void saveTournament() throws Exception {
+
+    }
+
+    @Override
+    public void saveCategory() throws Exception {
+        List<CategoryRapidDTO> categoryApiList = categoryApi.category();
+        List<Category> categoryList = categoryApiList
+                .stream()
+                .map(dto -> {
+                    Category category = new Category(dto);
+                    Optional<Category> findCategory = categoryRepository.findByRapidCategoryId(dto.getCategoryId());
+                    if(findCategory.isPresent()) category.setCategoryId(findCategory.get().getCategoryId());
+
+                    return category;
+                })
+                .toList();
+
+        categoryRepository.saveAll(categoryList);
     }
 
 }

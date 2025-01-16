@@ -34,7 +34,7 @@ public class PlayerApiClient {
         // 이름
         JsonNode name= teamNode.path("fullName");
         team.setPlayerName(name.asText());
-
+        team.setPlayerRapidId(teamNode.path("id").toString());
         // 상금
         JsonNode prizeNode = playerNode.path("prizeTotalRaw");
         JsonNode curNode = prizeNode.path("currency");

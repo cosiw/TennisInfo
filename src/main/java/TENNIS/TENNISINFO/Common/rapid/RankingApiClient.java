@@ -34,6 +34,7 @@ public class RankingApiClient {
         String updateDate = updateTime.toString();
         for(JsonNode dataNode : dataArrayNode){
             RankingRapidDTO rankingApiDTO = objectMapper.treeToValue(dataNode, RankingRapidDTO.class);
+            String id = dataNode.path("team").path("id").toString();
             rankingApiDTO.setUpdateTime(updateDate);
             list.add(rankingApiDTO);
         }

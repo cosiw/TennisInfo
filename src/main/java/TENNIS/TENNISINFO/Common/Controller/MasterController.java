@@ -42,9 +42,14 @@ public class MasterController {
         return new ResponseEntity("OK", HttpStatus.OK);
     }
 
-    @PostMapping("/tournament")
-    public ResponseEntity saveTournament(){
-
+    @PostMapping("/category")
+    public ResponseEntity saveCategory(){
+        try{
+            masterService.saveCategory();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(e, HttpStatus.OK);
+        }
         return new ResponseEntity("", HttpStatus.OK);
     }
 }

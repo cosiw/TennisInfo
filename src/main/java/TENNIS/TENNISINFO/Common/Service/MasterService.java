@@ -11,5 +11,9 @@ public interface MasterService {
 
     void savePlayerAndRanking() throws Exception;
 
+    void saveTournament() throws Exception;
+
+    void saveCategory() throws Exception;
+
 
 }
