@@ -5,13 +5,16 @@ import TENNIS.TENNISINFO.Category.Repository.CategoryRepository;
 import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import TENNIS.TENNISINFO.Common.rapid.CategoryApiClient;
 import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
+import TENNIS.TENNISINFO.Common.rapid.TournamentApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
 import TENNIS.TENNISINFO.Rank.Repository.RankingRepository;
+import TENNIS.TENNISINFO.Tournament.Repository.TournamentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +30,24 @@ public class MasterServiceImpl implements MasterService{
     private final RankingApiClient rankingApi;
     private final PlayerApiClient playerApi;
     private final CategoryApiClient categoryApi;
+    private final TournamentApiClient tournamentApiClient;
     private final PlayerRepository playerRepository;
     private final RankingRepository rankingRepository;
     private final CategoryRepository categoryRepository;
+    private final TournamentRepository tournamentRepository;
 
     public MasterServiceImpl(RankingApiClient rankingApi, PlayerApiClient playerApi,
                              PlayerRepository playerRepository, RankingRepository rankingRepository,
-                             CategoryApiClient categoryApi, CategoryRepository categoryRepository){
+                             CategoryApiClient categoryApi, CategoryRepository categoryRepository,
+                             TournamentApiClient tournamentApiClient, TournamentRepository tournamentRepository){
         this.rankingApi = rankingApi;
         this.playerApi = playerApi;
         this.categoryApi = categoryApi;
+        this.tournamentApiClient = tournamentApiClient;
         this.playerRepository = playerRepository;
         this.rankingRepository = rankingRepository;
         this.categoryRepository = categoryRepository;
+        this.tournamentRepository = tournamentRepository;
 
     }
     @Override
@@ -113,6 +121,12 @@ public class MasterServiceImpl implements MasterService{
     @Override
     public void saveTournament() throws Exception {
 
+        // CategoryTournaments 조회(일단 ATP만 조회)
+        List<TournamentRapidDTO> getTournamentRapidDTO = categoryApi.categoryTournaments("3");
+
+        // LeagueDetails 조회
+        List<TournamentRapidDTO> getDetails = tournamentApiClient.LeagueDetails(getTournamentRapidDTO);
+        // TournamentInfo 조회
     }
 
     @Override

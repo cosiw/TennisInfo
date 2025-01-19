@@ -5,7 +5,12 @@ import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
 public class TournamentApiClient {
     private final RapidApiConfig rapidApiConfig;
     private final ObjectMapper objectMapper;
@@ -15,14 +20,30 @@ public class TournamentApiClient {
         this.objectMapper = objectMapper;
     }
 
-    public TournamentRapidDTO Categories() throws Exception {
-//        TournamentRapidDTO tournament = new TournamentRapidDTO();
-//        String path = "tennis/tournament/categories";
-//        String jsonString = rapidApiConfig.sendTennisApi(path);
+    public List<TournamentRapidDTO> LeagueDetails(List<TournamentRapidDTO> tournamentList) throws Exception {
+
+        List<TournamentRapidDTO> list = new ArrayList<>();
+
+        tournamentList.forEach(tournamentDTO -> {
+            String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId();
+            try{
+                TournamentRapidDTO tournament = new TournamentRapidDTO();
+                String jsonString = rapidApiConfig.sendTennisApi(path);
+                JsonNode rootNode = objectMapper.readTree(jsonString);
+                JsonNode tournamentNode = rootNode.path("uniqueTournament");
+                objectMapper.readerForUpdating(tournament).readValue(tournamentNode);
+                list.add(tournament);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        });
+
+        return list;
+
 //
-//        JsonNode rootNode = objectMapper.readTree(jsonString);
-//        JsonNode categoriesNode = rootNode.path("categories");
-//        tournament = objectMapper.treeToValue(categoriesNode, TournamentRapidDTO.class);
+//
+//
+//
 //        // 이름
 //        JsonNode name= teamNode.path("fullName");
 //        team.setPlayerName(name.asText());
@@ -42,6 +63,6 @@ public class TournamentApiClient {
 //            team.setPrizeTotal(rapidApiConfig.eurToUsd(prizeTotal));
 //        }
 
-        return null;
+//        return null;
     }
 }

@@ -2,6 +2,7 @@ package TENNIS.TENNISINFO.Common.rapid;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jdk.jfr.Category;
@@ -35,4 +36,23 @@ public class CategoryApiClient {
 
         return list;
     }
+
+    public List<TournamentRapidDTO> categoryTournaments(String categoryId) throws Exception{
+        List<TournamentRapidDTO> list = new ArrayList<>();
+        String path = "tennis/tournament/all/category/" + categoryId;
+        String jsonString = rapidApiConfig.sendTennisApi(path);
+
+        JsonNode rootNode = objectMapper.readTree(jsonString);
+        JsonNode groupsNode = rootNode.path("groups");
+        for(JsonNode group : groupsNode){
+            JsonNode tournaments = group.path("uniqueTournaments");
+            for(JsonNode tournament : tournaments){
+                TournamentRapidDTO tournamentRapidDTO = objectMapper.treeToValue(tournament, TournamentRapidDTO.class);
+                list.add(tournamentRapidDTO);
+            }
+        }
+
+        return list;
+    }
+
 }

@@ -52,4 +52,16 @@ public class MasterController {
         }
         return new ResponseEntity("", HttpStatus.OK);
     }
+
+    @PostMapping("/tournament")
+    public ResponseEntity saveTournament(){
+        try{
+            masterService.saveTournament();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(e, HttpStatus.OK);
+        }
+
+        return null;
+    }
 }
