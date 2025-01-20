@@ -15,6 +15,10 @@ public class TournamentRapidDTO {
     private String tournamentRapidId;
     @JsonProperty("name")
     private String tournamentName;
+    @JsonProperty("cityName")
+    private String city;
+    @JsonProperty("surfaceType")
+    private String surfaceType;
     @JsonProperty("category")
     private CategoryRapidDTO category;
     @JsonProperty("titleHolder")
@@ -27,6 +31,8 @@ public class TournamentRapidDTO {
     private String groundType;
     @JsonProperty("tennisPoints")
     private Long points;
+    @JsonProperty("matchType")
+    private String matchType;
 
 
 }

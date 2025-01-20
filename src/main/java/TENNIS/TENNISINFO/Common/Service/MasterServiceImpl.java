@@ -14,6 +14,7 @@ import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
 import TENNIS.TENNISINFO.Rank.Repository.RankingRepository;
+import TENNIS.TENNISINFO.Tournament.Domain.Tournament;
 import TENNIS.TENNISINFO.Tournament.Repository.TournamentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,8 @@ public class MasterServiceImpl implements MasterService{
         List<String> ids = rankingApiList.stream()
                 .map(RankingRapidDTO::getTeam)
                 .map(PlayerRapidDTO::getPlayerRapidId)
-                .limit(3)
+                .skip(9)
+                .limit(30)
                 .collect(Collectors.toList());
 
         // 선수 API 조회
@@ -121,12 +123,31 @@ public class MasterServiceImpl implements MasterService{
     @Override
     public void saveTournament() throws Exception {
 
+        List<Tournament> tournamentList = new ArrayList<>();
         // CategoryTournaments 조회(일단 ATP만 조회)
         List<TournamentRapidDTO> getTournamentRapidDTO = categoryApi.categoryTournaments("3");
-
+        // 임시
+        List<TournamentRapidDTO> list  = getTournamentRapidDTO.stream().limit(3).toList();
         // LeagueDetails 조회
-        List<TournamentRapidDTO> getDetails = tournamentApiClient.LeagueDetails(getTournamentRapidDTO);
+        List<TournamentRapidDTO> getDetails = tournamentApiClient.LeagueDetails(list);
+
         // TournamentInfo 조회
+        List<TournamentRapidDTO> getTournamentInfos = tournamentApiClient.TournamentInfo(getDetails);
+
+        getTournamentInfos.stream().forEach(tournamentDTO -> {
+            Category category = categoryRepository.findByRapidCategoryId(tournamentDTO.getCategory().getCategoryId()).get();
+
+            Player mostTitleHolder = playerRepository.findByRapidPlayerId(tournamentDTO.getMostTitlePlayer().get(0).getPlayerRapidId()).get();
+
+            Player titleHolder = playerRepository.findByRapidPlayerId(tournamentDTO.getTitleHolder().getPlayerRapidId()).get();
+
+            Tournament tournament = new Tournament(tournamentDTO, category, mostTitleHolder, titleHolder);
+
+            tournamentList.add(tournament);
+        });
+
+        tournamentRepository.saveAll(tournamentList);
+
     }
 
     @Override

@@ -5,6 +5,7 @@ import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,42 +28,40 @@ public class TournamentApiClient {
         tournamentList.forEach(tournamentDTO -> {
             String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId();
             try{
-                TournamentRapidDTO tournament = new TournamentRapidDTO();
+
                 String jsonString = rapidApiConfig.sendTennisApi(path);
                 JsonNode rootNode = objectMapper.readTree(jsonString);
                 JsonNode tournamentNode = rootNode.path("uniqueTournament");
-                objectMapper.readerForUpdating(tournament).readValue(tournamentNode);
-                list.add(tournament);
+                objectMapper.readerForUpdating(tournamentDTO).readValue(tournamentNode);
+                list.add(tournamentDTO);
             }catch(Exception e){
                 e.printStackTrace();
             }
         });
 
         return list;
+    }
 
-//
-//
-//
-//
-//        // 이름
-//        JsonNode name= teamNode.path("fullName");
-//        team.setPlayerName(name.asText());
-//
-//        // 상금
-//        JsonNode prizeNode = playerNode.path("prizeTotalRaw");
-//        JsonNode curNode = prizeNode.path("currency");
-//
-//        String cur = curNode.asText();
-//
-//        if(cur.equals("EUR")){
-//            Long prizeCurrent = team.getPrizeCurrent();
-//            Long prizeTotal = team.getPrizeTotal();
-//
-//            // USD로 저장
-//            team.setPrizeCurrent(rapidApiConfig.eurToUsd(prizeCurrent));
-//            team.setPrizeTotal(rapidApiConfig.eurToUsd(prizeTotal));
-//        }
+    public List<TournamentRapidDTO> TournamentInfo(List<TournamentRapidDTO> tournamentList) throws Exception {
 
-//        return null;
+        List<TournamentRapidDTO> list = new ArrayList<>();
+
+
+        tournamentList.forEach(tournamentDTO -> {
+            String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId() + "/info";
+            try{
+
+                String jsonString = rapidApiConfig.sendTennisApi(path);
+                JsonNode rootNode = objectMapper.readTree(jsonString);
+                JsonNode tournamentNode = rootNode.path("meta");
+                ((ObjectNode)tournamentNode).remove("category");
+                objectMapper.readerForUpdating(tournamentDTO).readValue(tournamentNode);
+                list.add(tournamentDTO);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        });
+
+        return list;
     }
 }

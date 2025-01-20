@@ -62,6 +62,6 @@ public class MasterController {
             return new ResponseEntity(e, HttpStatus.OK);
         }
 
-        return null;
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
