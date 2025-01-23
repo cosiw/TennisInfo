@@ -42,8 +42,8 @@ public class PlayerApiClient {
         String cur = curNode.asText();
 
         if(cur.equals("EUR")){
-            Long prizeCurrent = team.getPrizeCurrent();
-            Long prizeTotal = team.getPrizeTotal();
+            Long prizeCurrent = team.getPrizeCurrent() != null? team.getPrizeCurrent() : 0L;
+            Long prizeTotal = team.getPrizeTotal() != null? team.getPrizeTotal() : 0L;
 
             // USD로 저장
             team.setPrizeCurrent(rapidApiConfig.eurToUsd(prizeCurrent));

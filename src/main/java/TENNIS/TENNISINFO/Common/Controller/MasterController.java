@@ -64,4 +64,15 @@ public class MasterController {
 
         return new ResponseEntity<>("", HttpStatus.OK);
     }
+
+    public ResponseEntity saveSeason(){
+        try{
+            masterService.saveSeason();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(e, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 }

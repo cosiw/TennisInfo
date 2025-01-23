@@ -15,5 +15,7 @@ public interface MasterService {
 
     void saveTournament() throws Exception;
 
+    void saveSeason() throws Exception;
+
 
 }

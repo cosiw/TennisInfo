@@ -46,7 +46,7 @@ public class Tournament extends BaseTimeEntity {
     private String mostTitles;
 
     @OneToOne
-    @JoinColumn(name="MOST_TITLE_PLAYER_ID")
+    @JoinColumn(name="MOST_TITLE_PLAYER_ID", nullable = true)
     private Player mostTitlePlayer;
 
     @OneToOne
@@ -64,8 +64,8 @@ public class Tournament extends BaseTimeEntity {
         this.city = dto.getCity();
         this.groundType = dto.getGroundType();
         this.mostTitles = dto.getMostTitles();
-        this.mostTitlePlayer = mostTitlePlayer;
-        this.titleHolder = titleHolder;
+        if(mostTitlePlayer.getPlayerId() != null) this.mostTitlePlayer = mostTitlePlayer;
+        if(titleHolder.getPlayerId() != null) this.titleHolder = titleHolder;
         this.points = dto.getPoints();
     }
 }

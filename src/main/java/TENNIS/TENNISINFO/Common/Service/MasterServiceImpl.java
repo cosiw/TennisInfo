@@ -61,8 +61,8 @@ public class MasterServiceImpl implements MasterService{
         List<String> ids = rankingApiList.stream()
                 .map(RankingRapidDTO::getTeam)
                 .map(PlayerRapidDTO::getPlayerRapidId)
-                .skip(9)
-                .limit(30)
+                .skip(30)
+                .limit(40)
                 .collect(Collectors.toList());
 
         // 선수 API 조회
@@ -127,7 +127,7 @@ public class MasterServiceImpl implements MasterService{
         // CategoryTournaments 조회(일단 ATP만 조회)
         List<TournamentRapidDTO> getTournamentRapidDTO = categoryApi.categoryTournaments("3");
         // 임시
-        List<TournamentRapidDTO> list  = getTournamentRapidDTO.stream().limit(3).toList();
+        List<TournamentRapidDTO> list  = getTournamentRapidDTO.stream().limit(2).toList();
         // LeagueDetails 조회
         List<TournamentRapidDTO> getDetails = tournamentApiClient.LeagueDetails(list);
 
@@ -136,10 +136,11 @@ public class MasterServiceImpl implements MasterService{
 
         getTournamentInfos.stream().forEach(tournamentDTO -> {
             Category category = categoryRepository.findByRapidCategoryId(tournamentDTO.getCategory().getCategoryId()).get();
-
-            Player mostTitleHolder = playerRepository.findByRapidPlayerId(tournamentDTO.getMostTitlePlayer().get(0).getPlayerRapidId()).get();
-
-            Player titleHolder = playerRepository.findByRapidPlayerId(tournamentDTO.getTitleHolder().getPlayerRapidId()).get();
+            Player mostTitleHolder = new Player();
+            if(!tournamentDTO.getMostTitlePlayer().isEmpty()){
+                mostTitleHolder = findOrSavePlayer(tournamentDTO.getMostTitlePlayer().get(0).getPlayerRapidId());
+            }
+            Player titleHolder = findOrSavePlayer(tournamentDTO.getTitleHolder().getPlayerRapidId());
 
             Tournament tournament = new Tournament(tournamentDTO, category, mostTitleHolder, titleHolder);
 
@@ -165,6 +166,28 @@ public class MasterServiceImpl implements MasterService{
                 .toList();
 
         categoryRepository.saveAll(categoryList);
+    }
+
+    public void saveSeason() throws Exception{
+
+    }
+
+    public Player findOrSavePlayer(String rapidPlayerId){
+        Optional<Player> findPlayer = playerRepository.findByRapidPlayerId(rapidPlayerId);
+        if(findPlayer.isPresent()){
+            return findPlayer.get();
+        }
+        Player savePlayer = new Player();
+        try{
+            PlayerRapidDTO searchPlayerDTO = playerApi.teamDetails(rapidPlayerId);
+            savePlayer = new Player(searchPlayerDTO);
+            savePlayer = playerRepository.save(savePlayer);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return savePlayer;
     }
 
 }
