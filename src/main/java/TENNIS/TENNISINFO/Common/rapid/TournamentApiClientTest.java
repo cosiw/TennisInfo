@@ -1,32 +1,42 @@
 package TENNIS.TENNISINFO.Common.rapid;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
-import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class TournamentApiClient {
-    private final RapidApiConfig rapidApiConfig;
-    private final ObjectMapper objectMapper;
+public class TournamentApiClientTest extends AbstractApiClient<TournamentRapidDTO>{
 
-    public TournamentApiClient(RapidApiConfig rapidApiConfig, ObjectMapper objectMapper) {
-        this.rapidApiConfig = rapidApiConfig;
-        this.objectMapper = objectMapper;
+    public TournamentApiClientTest(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
-    public List<TournamentRapidDTO> categoryTournaments(String categoryId) throws Exception{
-        List<TournamentRapidDTO> list = new ArrayList<>();
-        String path = "tennis/tournament/all/category/" + categoryId;
-        String jsonString = rapidApiConfig.sendTennisApi(path);
+    @Override
+    protected TournamentRapidDTO handleResponse(String response, String methodName) throws Exception {
+        Method method = this.getClass().getDeclaredMethod(methodName, String.class);
+        method.setAccessible(true);
 
-        JsonNode rootNode = objectMapper.readTree(jsonString);
+        return (TournamentRapidDTO) method.invoke(this, response);
+    }
+
+    @Override
+    protected List<TournamentRapidDTO> handleListResponse(String response, String methodName) throws Exception {
+        Method method = this.getClass().getDeclaredMethod(methodName, String.class);
+        method.setAccessible(true);
+
+        return (List<TournamentRapidDTO>) method.invoke(this, response);
+    }
+
+    public List<TournamentRapidDTO> categoryTournaments(String response) throws Exception{
+        List<TournamentRapidDTO> list = new ArrayList<>();
+
+        JsonNode rootNode = objectMapper.readTree(response);
         JsonNode groupsNode = rootNode.path("groups");
         for(JsonNode group : groupsNode){
             JsonNode tournaments = group.path("uniqueTournaments");
@@ -46,7 +56,8 @@ public class TournamentApiClient {
             String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId();
             try{
 
-                String jsonString = rapidApiConfig.sendTennisApi(path);
+                //String jsonString = rapidApiConfig.sendTennisApi(path);
+                String jsonString = "";
                 JsonNode rootNode = objectMapper.readTree(jsonString);
                 JsonNode tournamentNode = rootNode.path("uniqueTournament");
                 objectMapper.readerForUpdating(tournamentDTO).readValue(tournamentNode);
@@ -68,7 +79,8 @@ public class TournamentApiClient {
             String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId() + "/info";
             try{
 
-                String jsonString = rapidApiConfig.sendTennisApi(path);
+                //String jsonString = rapidApiConfig.sendTennisApi(path);
+                String jsonString = "";
                 JsonNode rootNode = objectMapper.readTree(jsonString);
                 JsonNode tournamentNode = rootNode.path("meta");
                 ((ObjectNode)tournamentNode).remove("category");

@@ -2,20 +2,19 @@ package TENNIS.TENNISINFO.Common.Service;
 
 import TENNIS.TENNISINFO.Category.Domain.Category;
 import TENNIS.TENNISINFO.Category.Repository.CategoryRepository;
+import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
-import TENNIS.TENNISINFO.Common.rapid.CategoryApiClient;
-import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
-import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
-import TENNIS.TENNISINFO.Common.rapid.TournamentApiClient;
+import TENNIS.TENNISINFO.Common.rapid.*;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
 import TENNIS.TENNISINFO.Rank.Repository.RankingRepository;
 import TENNIS.TENNISINFO.Tournament.Domain.Tournament;
 import TENNIS.TENNISINFO.Tournament.Repository.TournamentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +35,14 @@ public class MasterServiceImpl implements MasterService{
     private final RankingRepository rankingRepository;
     private final CategoryRepository categoryRepository;
     private final TournamentRepository tournamentRepository;
+    private final ObjectMapper objectMapper;
+    private AbstractApiClient apiClient;
 
     public MasterServiceImpl(RankingApiClient rankingApi, PlayerApiClient playerApi,
                              PlayerRepository playerRepository, RankingRepository rankingRepository,
                              CategoryApiClient categoryApi, CategoryRepository categoryRepository,
-                             TournamentApiClient tournamentApiClient, TournamentRepository tournamentRepository){
+                             TournamentApiClient tournamentApiClient, TournamentRepository tournamentRepository,
+                             ObjectMapper objectMapper){
         this.rankingApi = rankingApi;
         this.playerApi = playerApi;
         this.categoryApi = categoryApi;
@@ -49,11 +51,14 @@ public class MasterServiceImpl implements MasterService{
         this.rankingRepository = rankingRepository;
         this.categoryRepository = categoryRepository;
         this.tournamentRepository = tournamentRepository;
+        this.objectMapper = objectMapper;
 
     }
     @Override
     @Transactional
     public void savePlayerAndRanking() throws Exception {
+
+        apiClient = new RankingApiClientTest(objectMapper);
         // 랭킹 API 조회
         List<RankingRapidDTO> rankingApiList = rankingApi.atpRankings();
 

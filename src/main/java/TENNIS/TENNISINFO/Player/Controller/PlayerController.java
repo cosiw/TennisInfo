@@ -1,9 +1,15 @@
 package TENNIS.TENNISINFO.Player.Controller;
 
+import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
+import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
+import TENNIS.TENNISINFO.Common.rapid.AbstractApiClient;
+import TENNIS.TENNISINFO.Common.rapid.PlayerApiClientTest;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Service.PlayerService;
 import TENNIS.TENNISINFO.Rank.Service.RankService;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +27,38 @@ public class PlayerController {
 
     RankService rankService;
 
+    RapidApiConfig rapidApiConfig;
+
+    ObjectMapper objectMapper;
+
+
+
+
     @Autowired
-    public PlayerController(PlayerService playerService, RankService rankService){
+    public PlayerController(PlayerService playerService, RankService rankService, RapidApiConfig rapidApiConfig, ObjectMapper objectMapper){
         this.playerService = playerService;
         this.rankService = rankService;
+        this.rapidApiConfig = rapidApiConfig;
+        this.objectMapper = objectMapper;
     }
     @PostMapping(value="{rapidPlayerId}")
     public ResponseEntity savePlayer(@PathVariable String rapidPlayerId){
+        PlayerRapidDTO dto = new PlayerRapidDTO();
+        AbstractApiClient apiClient = new PlayerApiClientTest(objectMapper);
         try{
-            String jsonString = playerService.getPlayerByApi(rapidPlayerId);
 
-            Player player =  playerService.savePlayer(jsonString, rapidPlayerId);
+              dto = (PlayerRapidDTO)apiClient.executeApiCall("tennis/team/37785", "teamDetails");
 
-            playerService.saveCareer(jsonString, rapidPlayerId, player);
+//            String jsonString = playerService.getPlayerByApi(rapidPlayerId);
+//
+//            Player player =  playerService.savePlayer(jsonString, rapidPlayerId);
+//
+//            playerService.saveCareer(jsonString, rapidPlayerId, player);
 
         }catch(Exception ex){
             ex.printStackTrace();
         }
-        return new ResponseEntity("", HttpStatus.OK);
+        return new ResponseEntity(dto, HttpStatus.OK);
     }
 
     @PostMapping()

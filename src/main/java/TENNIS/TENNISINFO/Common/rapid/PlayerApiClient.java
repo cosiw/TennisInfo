@@ -7,27 +7,36 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class PlayerApiClient {
-    private final RapidApiConfig rapidApiConfig;
-    private final ObjectMapper objectMapper;
+public class PlayerApiClient  extends AbstractApiClient<PlayerRapidDTO>{
 
-    public PlayerApiClient(RapidApiConfig rapidApiConfig, ObjectMapper objectMapper) {
-        this.rapidApiConfig = rapidApiConfig;
-        this.objectMapper = objectMapper;
+    public PlayerApiClient(ObjectMapper objectMapper){
+        super(objectMapper);
     }
 
-    public PlayerRapidDTO teamDetails(String rapidId) throws Exception {
+    @Override
+    protected PlayerRapidDTO handleResponse(String response, String methodName) throws Exception {
+        Method method = this.getClass().getDeclaredMethod(methodName, String.class);
+        method.setAccessible(true);
+
+        return (PlayerRapidDTO) method.invoke(this, response);
+    }
+
+    @Override
+    protected List<PlayerRapidDTO> handleListResponse(String response, String methodName) throws Exception {
+        Method method = this.getClass().getDeclaredMethod(methodName, String.class);
+        method.setAccessible(true);
+
+        return (List<PlayerRapidDTO>) method.invoke(this, response);
+    }
+
+    public PlayerRapidDTO teamDetails(String response) throws Exception {
         PlayerRapidDTO team = new PlayerRapidDTO();
-
-        String path = "tennis/team/" + rapidId;
-
-        String jsonString = rapidApiConfig.sendTennisApi(path);
-
-        JsonNode rootNode = objectMapper.readTree(jsonString);
+        JsonNode rootNode = objectMapper.readTree(response);
         JsonNode teamNode = rootNode.path("team");
         JsonNode playerNode = teamNode.path("playerTeamInfo");
         team = objectMapper.treeToValue(playerNode, PlayerRapidDTO.class);
@@ -46,20 +55,21 @@ public class PlayerApiClient {
             Long prizeTotal = team.getPrizeTotal() != null? team.getPrizeTotal() : 0L;
 
             // USD로 저장
-            team.setPrizeCurrent(rapidApiConfig.eurToUsd(prizeCurrent));
-            team.setPrizeTotal(rapidApiConfig.eurToUsd(prizeTotal));
+            team.setPrizeCurrent(eurToUsd(prizeCurrent));
+            team.setPrizeTotal(eurToUsd(prizeTotal));
         }
 
         return team;
+
+
     }
 
     public String teamImage(String rapidId) throws Exception {
         String path = "tennis/team/" + rapidId + "/image";
 
-        String jsonString = rapidApiConfig.imageApi(path);
+        //String jsonString = rapidApiConfig.imageApi(path);
 
-        return jsonString;
+        return "";
     }
-
 
 }

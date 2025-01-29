@@ -41,17 +41,17 @@ public class RapidApiConfig {
                     .header("x-rapidapi-host", "tennisapi1.p.rapidapi.com")
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
-//            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-//            responseText = response.body();
-            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-            byte[] responseBody = response.body();
-            // GZIP 압축 해제
-            GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(responseBody));
-            byte[] decompressedBytes = gzipInputStream.readAllBytes();
-            gzipInputStream.close();
-
-            // UTF-8로 변환
-            responseText = new String(decompressedBytes, StandardCharsets.UTF_8);
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            responseText = response.body();
+//            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+//            byte[] responseBody = response.body();
+//            // GZIP 압축 해제
+//            GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(responseBody));
+//            byte[] decompressedBytes = gzipInputStream.readAllBytes();
+//            gzipInputStream.close();
+//
+//            // UTF-8로 변환
+//            responseText = new String(decompressedBytes, StandardCharsets.UTF_8);
             System.out.println("응답 텍스트: " + responseText);
         }catch(Exception e){
             e.printStackTrace();
