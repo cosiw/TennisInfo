@@ -1,16 +1,15 @@
 package TENNIS.TENNISINFO.Common.rapid;
 
-import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class CategoryApiClientTest extends AbstractApiClient<CategoryRapidDTO>{
 
     public CategoryApiClientTest(ObjectMapper objectMapper) {

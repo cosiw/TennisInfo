@@ -6,11 +6,13 @@ import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class TournamentApiClientTest extends AbstractApiClient<TournamentRapidDTO>{
 
     public TournamentApiClientTest(ObjectMapper objectMapper) {
@@ -42,55 +44,32 @@ public class TournamentApiClientTest extends AbstractApiClient<TournamentRapidDT
             JsonNode tournaments = group.path("uniqueTournaments");
             for(JsonNode tournament : tournaments){
                 TournamentRapidDTO tournamentRapidDTO = objectMapper.treeToValue(tournament, TournamentRapidDTO.class);
-                list.add(tournamentRapidDTO);
+                // 7월, 8월에 대회를 진행하는 경우 2개 이상 호출할 수 있음.
+                boolean flag = list.stream().anyMatch(p -> p.getTournamentRapidId().equals(tournamentRapidDTO.getTournamentRapidId()));
+                if(!flag) list.add(tournamentRapidDTO);
             }
         }
 
         return list;
     }
-    public List<TournamentRapidDTO> LeagueDetails(List<TournamentRapidDTO> tournamentList) throws Exception {
+    public TournamentRapidDTO leagueDetails(String response) throws Exception {
 
-        List<TournamentRapidDTO> list = new ArrayList<>();
+        JsonNode rootNode = objectMapper.readTree(response);
+        JsonNode tournamentNode = rootNode.path("uniqueTournament");
+        TournamentRapidDTO tournamentDTO = objectMapper.treeToValue(tournamentNode, TournamentRapidDTO.class);
 
-        tournamentList.forEach(tournamentDTO -> {
-            String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId();
-            try{
-
-                //String jsonString = rapidApiConfig.sendTennisApi(path);
-                String jsonString = "";
-                JsonNode rootNode = objectMapper.readTree(jsonString);
-                JsonNode tournamentNode = rootNode.path("uniqueTournament");
-                objectMapper.readerForUpdating(tournamentDTO).readValue(tournamentNode);
-                list.add(tournamentDTO);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        });
-
-        return list;
+        return tournamentDTO;
     }
 
-    public List<TournamentRapidDTO> TournamentInfo(List<TournamentRapidDTO> tournamentList) throws Exception {
+    public TournamentRapidDTO tournamentInfo(String response) throws Exception {
 
-        List<TournamentRapidDTO> list = new ArrayList<>();
+        JsonNode rootNode = objectMapper.readTree(response);
+        JsonNode tournamentNode = rootNode.path("meta");
+        ((ObjectNode)tournamentNode).remove("category");
+        TournamentRapidDTO tournamentDTO = objectMapper.treeToValue(tournamentNode, TournamentRapidDTO.class);
 
-
-        tournamentList.forEach(tournamentDTO -> {
-            String path = "tennis/tournament/" + tournamentDTO.getTournamentRapidId() + "/info";
-            try{
-
-                //String jsonString = rapidApiConfig.sendTennisApi(path);
-                String jsonString = "";
-                JsonNode rootNode = objectMapper.readTree(jsonString);
-                JsonNode tournamentNode = rootNode.path("meta");
-                ((ObjectNode)tournamentNode).remove("category");
-                objectMapper.readerForUpdating(tournamentDTO).readValue(tournamentNode);
-                list.add(tournamentDTO);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        });
-
-        return list;
+        return tournamentDTO;
     }
+
+
 }

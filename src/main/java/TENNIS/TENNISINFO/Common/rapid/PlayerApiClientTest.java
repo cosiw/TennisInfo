@@ -37,7 +37,15 @@ public class PlayerApiClientTest extends AbstractApiClient<PlayerRapidDTO>{
         JsonNode rootNode = objectMapper.readTree(response);
         JsonNode teamNode = rootNode.path("team");
         JsonNode playerNode = teamNode.path("playerTeamInfo");
+        
+        // 복식 선수일 경우
+        if(playerNode.isEmpty()) {
+            team.setPlayerRapidId(teamNode.get("id").toString());
+            team.setPlayerName(teamNode.get("shortName").toString());
+            return team;
+        }
         team = objectMapper.treeToValue(playerNode, PlayerRapidDTO.class);
+
         // 이름
         JsonNode name= teamNode.path("fullName");
         team.setPlayerName(name.asText());
@@ -58,16 +66,14 @@ public class PlayerApiClientTest extends AbstractApiClient<PlayerRapidDTO>{
         }
 
         return team;
-
-
     }
 
     public String teamImage(String rapidId) throws Exception {
         String path = "tennis/team/" + rapidId + "/image";
 
-        String jsonString = rapidApiConfig.imageApi(path);
+        //String jsonString = imageApi(path);
 
-        return jsonString;
+        return "";
     }
 
 }

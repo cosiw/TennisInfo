@@ -2,6 +2,7 @@ package TENNIS.TENNISINFO.Common.Service;
 
 import TENNIS.TENNISINFO.Category.Domain.Category;
 import TENNIS.TENNISINFO.Category.Repository.CategoryRepository;
+import TENNIS.TENNISINFO.Common.Enum.RapidApi;
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
@@ -18,19 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class MasterServiceImpl implements MasterService{
 
-    private final RankingApiClient rankingApi;
-    private final PlayerApiClient playerApi;
-    private final CategoryApiClient categoryApi;
-    private final TournamentApiClient tournamentApiClient;
+
     private final PlayerRepository playerRepository;
     private final RankingRepository rankingRepository;
     private final CategoryRepository categoryRepository;
@@ -38,43 +33,41 @@ public class MasterServiceImpl implements MasterService{
     private final ObjectMapper objectMapper;
     private AbstractApiClient apiClient;
 
-    public MasterServiceImpl(RankingApiClient rankingApi, PlayerApiClient playerApi,
-                             PlayerRepository playerRepository, RankingRepository rankingRepository,
-                             CategoryApiClient categoryApi, CategoryRepository categoryRepository,
-                             TournamentApiClient tournamentApiClient, TournamentRepository tournamentRepository,
-                             ObjectMapper objectMapper){
-        this.rankingApi = rankingApi;
-        this.playerApi = playerApi;
-        this.categoryApi = categoryApi;
-        this.tournamentApiClient = tournamentApiClient;
+    private final Map<String, AbstractApiClient> apiClientMap;
+
+    public MasterServiceImpl(PlayerRepository playerRepository, RankingRepository rankingRepository,
+                             CategoryRepository categoryRepository,
+                             TournamentRepository tournamentRepository,
+                             ObjectMapper objectMapper, Map<String, AbstractApiClient> apiClientMap){
         this.playerRepository = playerRepository;
         this.rankingRepository = rankingRepository;
         this.categoryRepository = categoryRepository;
         this.tournamentRepository = tournamentRepository;
         this.objectMapper = objectMapper;
+        this.apiClientMap = apiClientMap;
 
     }
     @Override
     @Transactional
     public void savePlayerAndRanking() throws Exception {
 
-        apiClient = new RankingApiClientTest(objectMapper);
+        apiClient = apiClientMap.get("rankingApiClientTest");
         // 랭킹 API 조회
-        List<RankingRapidDTO> rankingApiList = rankingApi.atpRankings();
+        List<RankingRapidDTO> rankingApiList = apiClient.executeListApiCall(RapidApi.ATPRANKINGS.getUrl(),RapidApi.ATPRANKINGS.getMethodName());
 
         // playerRapidId 추출
         List<String> ids = rankingApiList.stream()
                 .map(RankingRapidDTO::getTeam)
                 .map(PlayerRapidDTO::getPlayerRapidId)
-                .skip(30)
-                .limit(40)
                 .collect(Collectors.toList());
+
+        apiClient = apiClientMap.get("playerApiClientTest");
 
         // 선수 API 조회
         List<PlayerRapidDTO> list = ids.stream()
                 .map(p -> {
                     try{
-                        return playerApi.teamDetails(p);
+                        return (PlayerRapidDTO)apiClient.executeApiCall(RapidApi.TEAMDETAILS.getUrl(p), RapidApi.TEAMDETAILS.getMethodName() );
                     }catch(Exception e){
                         e.printStackTrace();
                         return null;
@@ -104,12 +97,17 @@ public class MasterServiceImpl implements MasterService{
                             .stream()
                             .filter(pp -> rankDTO.getTeam().getPlayerRapidId().equals(pp.getRapidPlayerId()))
                             .findFirst();
+
                     if(player.isPresent()){
-                        return new Ranking(rankDTO, player.get());
+                        Optional<Ranking> rank = rankingRepository.findByPlayer(player.get());
+                        if(rank.isEmpty()){
+                            return new Ranking(rankDTO, player.get());
+                        }
                     }else{
                         noData.add(rankDTO.getTeam().getPlayerRapidId());
                         return null;
                     }
+                    return null;
                 })
                 .filter(p -> p != null)
                 .collect(Collectors.toList());
@@ -126,39 +124,11 @@ public class MasterServiceImpl implements MasterService{
     }
 
     @Override
-    public void saveTournament() throws Exception {
-
-        List<Tournament> tournamentList = new ArrayList<>();
-        // CategoryTournaments 조회(일단 ATP만 조회)
-        List<TournamentRapidDTO> getTournamentRapidDTO = categoryApi.categoryTournaments("3");
-        // 임시
-        List<TournamentRapidDTO> list  = getTournamentRapidDTO.stream().limit(2).toList();
-        // LeagueDetails 조회
-        List<TournamentRapidDTO> getDetails = tournamentApiClient.LeagueDetails(list);
-
-        // TournamentInfo 조회
-        List<TournamentRapidDTO> getTournamentInfos = tournamentApiClient.TournamentInfo(getDetails);
-
-        getTournamentInfos.stream().forEach(tournamentDTO -> {
-            Category category = categoryRepository.findByRapidCategoryId(tournamentDTO.getCategory().getCategoryId()).get();
-            Player mostTitleHolder = new Player();
-            if(!tournamentDTO.getMostTitlePlayer().isEmpty()){
-                mostTitleHolder = findOrSavePlayer(tournamentDTO.getMostTitlePlayer().get(0).getPlayerRapidId());
-            }
-            Player titleHolder = findOrSavePlayer(tournamentDTO.getTitleHolder().getPlayerRapidId());
-
-            Tournament tournament = new Tournament(tournamentDTO, category, mostTitleHolder, titleHolder);
-
-            tournamentList.add(tournament);
-        });
-
-        tournamentRepository.saveAll(tournamentList);
-
-    }
-
-    @Override
     public void saveCategory() throws Exception {
-        List<CategoryRapidDTO> categoryApiList = categoryApi.category();
+        apiClient = apiClientMap.get("categoryApiClientTest");
+
+        List<CategoryRapidDTO> categoryApiList = apiClient.executeListApiCall(RapidApi.CATEGORY.getUrl(), RapidApi.CATEGORY.getMethodName());
+
         List<Category> categoryList = categoryApiList
                 .stream()
                 .map(dto -> {
@@ -173,6 +143,60 @@ public class MasterServiceImpl implements MasterService{
         categoryRepository.saveAll(categoryList);
     }
 
+    @Override
+    @Transactional
+    public void saveTournament() throws Exception {
+        apiClient = apiClientMap.get("tournamentApiClientTest");
+        List<TournamentRapidDTO> tournamentInfos = new ArrayList<>();
+
+        List<Tournament> tournamentList = new ArrayList<>();
+
+        // CategoryTournaments 조회(일단 ATP만 조회)
+        List<TournamentRapidDTO> getTournamentRapidDTO = apiClient.executeListApiCall(RapidApi.CATEGORYTOURNAMENTS.getUrl("3"),RapidApi.CATEGORYTOURNAMENTS.getMethodName());
+
+        getTournamentRapidDTO.stream().forEach(tournament -> {
+
+                try{
+                    // legueDetail 조회
+                    TournamentRapidDTO leagueDetail = (TournamentRapidDTO) apiClient.executeApiCall(RapidApi.LEAGUEDETAILS.getUrl(tournament.getTournamentRapidId()), RapidApi.LEAGUEDETAILS.getMethodName());
+                    // tournamentInfo 조회
+                    TournamentRapidDTO tournamentInfo = (TournamentRapidDTO) apiClient.executeApiCall(RapidApi.TOURNAMENTINFO.getUrl(tournament.getTournamentRapidId()), RapidApi.TOURNAMENTINFO.getMethodName());
+
+                    //objectMapper.readerForUpdating(leagueDetail).readValue(objectMapper.writeValueAsString(tournamentInfo));
+                    leagueDetail = objectMapper.updateValue(leagueDetail,tournamentInfo);
+                    tournamentInfos.add(leagueDetail);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+        });
+
+        tournamentInfos.stream().forEach(tournamentDTO -> {
+
+            Category category = categoryRepository.findByRapidCategoryId(tournamentDTO.getCategory().getCategoryId()).get();
+            Player mostTitleHolder = new Player();
+            Player titleHolder = new Player();
+            if(!tournamentDTO.getMostTitlePlayer().isEmpty()){
+                mostTitleHolder = findOrSavePlayer(tournamentDTO.getMostTitlePlayer().get(0).getPlayerRapidId());
+            }
+            if(!tournamentDTO.getMostTitlePlayer().isEmpty()){
+                titleHolder = findOrSavePlayer(tournamentDTO.getTitleHolder().getPlayerRapidId());
+            }
+
+
+            Tournament tournament = new Tournament(tournamentDTO, category, mostTitleHolder, titleHolder);
+            Optional<Tournament> findTournament = tournamentRepository.findByRapidTournamentId(tournament.getRapidTournamentId());
+            if(findTournament.isEmpty()){
+                tournamentList.add(tournament);
+            }
+        });
+
+        tournamentRepository.saveAll(tournamentList);
+
+    }
+
+
+
     public void saveSeason() throws Exception{
 
     }
@@ -184,7 +208,8 @@ public class MasterServiceImpl implements MasterService{
         }
         Player savePlayer = new Player();
         try{
-            PlayerRapidDTO searchPlayerDTO = playerApi.teamDetails(rapidPlayerId);
+            apiClient = apiClientMap.get("playerApiClientTest");
+            PlayerRapidDTO searchPlayerDTO = (PlayerRapidDTO)apiClient.executeApiCall(RapidApi.TEAMDETAILS.getUrl(rapidPlayerId), RapidApi.TEAMDETAILS.getMethodName());
             savePlayer = new Player(searchPlayerDTO);
             savePlayer = playerRepository.save(savePlayer);
 

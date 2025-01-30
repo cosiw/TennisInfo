@@ -2,31 +2,31 @@ package TENNIS.TENNISINFO.Common.rapid;
 
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 
 public abstract class AbstractApiClient<T> {
 
+    //protected String rapidApiKey;
+    @Value("${x-rapidapi-key}")
     private String rapidApiKey;
 
-    @Value("${x-rapidapi-key}")
-    public void setRapidApikey(String rapidApiKey){
-        this.rapidApiKey = rapidApiKey;
-    }
-
     protected final ObjectMapper objectMapper;
-
     public AbstractApiClient(ObjectMapper objectMapper){
         this.objectMapper = objectMapper;
     }
@@ -47,7 +47,7 @@ public abstract class AbstractApiClient<T> {
 
         List<T> responseList = null;
         try{
-            String apiResponse = rapidApiConfig.sendTennisApi(url);
+            String apiResponse = sendTennisApi(url);
             responseList = handleListResponse(apiResponse, methodName);
         }catch(Exception e){
             e.printStackTrace();
@@ -60,9 +60,6 @@ public abstract class AbstractApiClient<T> {
         String responseText = "";
         try{
             String uri = "https://tennisapi1.p.rapidapi.com/api/";
-
-            // HttpClient 생성
-            HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(uri + param))

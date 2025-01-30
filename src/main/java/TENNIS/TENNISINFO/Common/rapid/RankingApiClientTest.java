@@ -6,11 +6,12 @@ import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
 import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component
 public class RankingApiClientTest extends AbstractApiClient<RankingRapidDTO>{
     public RankingApiClientTest(ObjectMapper objectMapper) {
         super(objectMapper);
