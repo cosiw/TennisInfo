@@ -17,5 +17,7 @@ public interface MasterService {
 
     void saveSeason() throws Exception;
 
+    void saveRound() throws Exception;
+
 
 }

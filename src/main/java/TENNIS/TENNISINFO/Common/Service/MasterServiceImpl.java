@@ -4,15 +4,16 @@ import TENNIS.TENNISINFO.Category.Domain.Category;
 import TENNIS.TENNISINFO.Category.Repository.CategoryRepository;
 import TENNIS.TENNISINFO.Common.Enum.RapidApi;
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
-import TENNIS.TENNISINFO.Common.domain.CategoryRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.PlayerRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.RankingRapidDTO;
-import TENNIS.TENNISINFO.Common.domain.TournamentRapidDTO;
+import TENNIS.TENNISINFO.Common.domain.*;
 import TENNIS.TENNISINFO.Common.rapid.*;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
 import TENNIS.TENNISINFO.Rank.Repository.RankingRepository;
+import TENNIS.TENNISINFO.Round.Domain.Round;
+import TENNIS.TENNISINFO.Round.Repository.RoundRepository;
+import TENNIS.TENNISINFO.Season.Domain.Season;
+import TENNIS.TENNISINFO.Season.Repository.SeasonRepository;
 import TENNIS.TENNISINFO.Tournament.Domain.Tournament;
 import TENNIS.TENNISINFO.Tournament.Repository.TournamentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,8 @@ public class MasterServiceImpl implements MasterService{
     private final RankingRepository rankingRepository;
     private final CategoryRepository categoryRepository;
     private final TournamentRepository tournamentRepository;
+    private final SeasonRepository seasonRepository;
+    private final RoundRepository roundRepository;
     private final ObjectMapper objectMapper;
     private AbstractApiClient apiClient;
 
@@ -38,11 +42,15 @@ public class MasterServiceImpl implements MasterService{
     public MasterServiceImpl(PlayerRepository playerRepository, RankingRepository rankingRepository,
                              CategoryRepository categoryRepository,
                              TournamentRepository tournamentRepository,
+                             SeasonRepository seasonRepository,
+                             RoundRepository roundRepository,
                              ObjectMapper objectMapper, Map<String, AbstractApiClient> apiClientMap){
         this.playerRepository = playerRepository;
         this.rankingRepository = rankingRepository;
         this.categoryRepository = categoryRepository;
         this.tournamentRepository = tournamentRepository;
+        this.seasonRepository = seasonRepository;
+        this.roundRepository = roundRepository;
         this.objectMapper = objectMapper;
         this.apiClientMap = apiClientMap;
 
@@ -198,6 +206,60 @@ public class MasterServiceImpl implements MasterService{
 
 
     public void saveSeason() throws Exception{
+        try{
+            apiClient = apiClientMap.get("seasonApiClient");
+            List<Tournament> findTournament = tournamentRepository.findAll();
+            findTournament.stream().forEach(t -> {
+                List<SeasonRapidDTO> seasonRapidList = apiClient.executeListApiCall(RapidApi.LEAGUESEASONS.getUrl(t.getRapidTournamentId()),RapidApi.LEAGUESEASONS.getMethodName());
+
+                List<Season> seasonList = seasonRapidList.stream()
+                        .map(season -> {
+                            SeasonRapidDTO seasonInfo = (SeasonRapidDTO) apiClient.executeApiCall(RapidApi.LEAGUESEASONINFO.getUrl(t.getRapidTournamentId(),season.getSeasonRapidId()), RapidApi.LEAGUESEASONINFO.getMethodName());
+                            if(seasonInfo == null) return null;
+                            seasonInfo.setSeasonRapidId(season.getSeasonRapidId());
+                            seasonInfo.setYear(season.getYear());
+                            return new Season(seasonInfo,t);
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+                seasonRepository.saveAll(seasonList);
+            });
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void saveRound() throws Exception{
+        apiClient = apiClientMap.get("roundApiClient");
+        List<Season> findSeason = seasonRepository.findAll();
+        findSeason.stream().forEach(s -> {
+            Optional<Tournament> findTournament = tournamentRepository.findById(s.getTournament().getTournamentId());
+            if(findTournament.isPresent()){
+                Tournament tournament = findTournament.get();
+                String tournamentRapidId = tournament.getRapidTournamentId();
+                String seasonRapidId = s.getRapidSeasonId();
+
+                List<RoundRapidDTO> roundRapidList = apiClient.executeListApiCall(RapidApi.LEAGUEROUNDS.getUrl(tournamentRapidId, seasonRapidId),
+                        RapidApi.LEAGUEROUNDS.getMethodName());
+
+                if(roundRapidList != null){
+                    List<Round> roundList = roundRapidList.stream()
+                                                          .map(roundDTO -> {
+                                                              Round round = new Round(roundDTO, s);
+                                                              Optional<Round> existingRound = roundRepository.findByRapidRoundIdAndSlugAndSeason(round.getRapidRoundId(), round.getSlug(), s);
+
+                                                              if(existingRound.isPresent()) round.setRoundId(existingRound.get().getRoundId());
+
+                                                              return round;
+                                                          }).toList();
+
+                    roundRepository.saveAll(roundList);
+                }
+            }
+        });
+
 
     }
 

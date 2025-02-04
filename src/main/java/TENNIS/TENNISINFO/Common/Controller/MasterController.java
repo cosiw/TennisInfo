@@ -64,7 +64,7 @@ public class MasterController {
 
         return new ResponseEntity<>("", HttpStatus.OK);
     }
-
+    @PostMapping("/season")
     public ResponseEntity saveSeason(){
         try{
             masterService.saveSeason();
@@ -74,5 +74,16 @@ public class MasterController {
         }
 
         return new ResponseEntity<>("", HttpStatus.OK);
+    }
+    @PostMapping("/round")
+    public ResponseEntity saveRound(){
+        try{
+            masterService.saveRound();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(e, HttpStatus.OK);
+        }
+
+        return new ResponseEntity("", HttpStatus.OK);
     }
 }

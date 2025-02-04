@@ -8,7 +8,10 @@ public enum RapidApi {
     CATEGORY("category","tennis/tournament/categories"),
     CATEGORYTOURNAMENTS("categoryTournaments","tennis/tournament/all/category/%s"),
     LEAGUEDETAILS("leagueDetails", "tennis/tournament/%s"),
-    TOURNAMENTINFO("tournamentInfo","tennis/tournament/%s/info");
+    TOURNAMENTINFO("tournamentInfo","tennis/tournament/%s/info"),
+    LEAGUESEASONS("leagueSeasons", "tennis/tournament/%s/seasons"),
+    LEAGUESEASONINFO("leagueSeasonInfo", "tennis/tournament/%s/season/%s/info"),
+    LEAGUEROUNDS("leagueRounds", "tennis/tournament/%s/season/%s/rounds");
 
     private final String methodName;
     private final String url;
