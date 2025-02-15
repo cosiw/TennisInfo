@@ -6,6 +6,8 @@ import TENNIS.TENNISINFO.Common.Enum.RapidApi;
 import TENNIS.TENNISINFO.Common.config.RapidApiConfig;
 import TENNIS.TENNISINFO.Common.domain.*;
 import TENNIS.TENNISINFO.Common.rapid.*;
+import TENNIS.TENNISINFO.Match.Domain.Match;
+import TENNIS.TENNISINFO.Match.Repository.MatchRepository;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Player.Repository.PlayerRepository;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
@@ -34,6 +36,7 @@ public class MasterServiceImpl implements MasterService{
     private final TournamentRepository tournamentRepository;
     private final SeasonRepository seasonRepository;
     private final RoundRepository roundRepository;
+    private final MatchRepository matchRepository;
     private final ObjectMapper objectMapper;
     private AbstractApiClient apiClient;
 
@@ -44,6 +47,7 @@ public class MasterServiceImpl implements MasterService{
                              TournamentRepository tournamentRepository,
                              SeasonRepository seasonRepository,
                              RoundRepository roundRepository,
+                             MatchRepository matchRepository,
                              ObjectMapper objectMapper, Map<String, AbstractApiClient> apiClientMap){
         this.playerRepository = playerRepository;
         this.rankingRepository = rankingRepository;
@@ -51,6 +55,7 @@ public class MasterServiceImpl implements MasterService{
         this.tournamentRepository = tournamentRepository;
         this.seasonRepository = seasonRepository;
         this.roundRepository = roundRepository;
+        this.matchRepository = matchRepository;
         this.objectMapper = objectMapper;
         this.apiClientMap = apiClientMap;
 
@@ -261,6 +266,33 @@ public class MasterServiceImpl implements MasterService{
         });
 
 
+    }
+
+    @Override
+    public void saveMatch() throws Exception {
+        apiClient = apiClientMap.get("matchApiClient");
+        List<Round> findRound = roundRepository.findRoundAndSeasonAndTournament();
+        findRound.stream().forEach(r -> {
+            String rapidTournamentId = r.getSeason().getTournament().getRapidTournamentId();
+            String rapidSeasonId = r.getSeason().getRapidSeasonId();
+            String rapidRoundId = r.getRapidRoundId();
+            String rapidSlug = r.getSlug();
+            if(!(apiClient instanceof MatchApiClient)) apiClient = apiClientMap.get("matchApiClient");
+            List<MatchRapidDTO> matchRapidList = apiClient.executeListApiCall(RapidApi.LEAGUEEVENTSBYROUND.getUrl(rapidTournamentId, rapidSeasonId, rapidRoundId, rapidSlug), RapidApi.LEAGUEEVENTSBYROUND.getMethodName());
+
+            if(matchRapidList != null){
+                matchRapidList.forEach(matchRapidDTO -> {
+                    Player homePlayer = findOrSavePlayer(matchRapidDTO.getHomePlayer().getPlayerRapidId());
+                    Player awayPlayer = findOrSavePlayer(matchRapidDTO.getAwayPlayer().getPlayerRapidId());
+                    Match match = new Match(matchRapidDTO, r,  homePlayer, awayPlayer);
+                    if(matchRepository.findByMatchRapidId(match.getMatchRapidId()).isEmpty()){
+                        matchRepository.save(match);
+                    }
+                });
+
+            }
+
+        });
     }
 
     public Player findOrSavePlayer(String rapidPlayerId){

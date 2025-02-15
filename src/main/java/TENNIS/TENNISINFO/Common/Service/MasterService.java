@@ -19,5 +19,7 @@ public interface MasterService {
 
     void saveRound() throws Exception;
 
+    void saveMatch() throws Exception;
+
 
 }

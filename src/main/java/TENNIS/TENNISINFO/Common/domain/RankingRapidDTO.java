@@ -24,12 +24,3 @@ public class RankingRapidDTO {
 
 
 }
-@Getter
-@Setter
-@NoArgsConstructor
-class PlayerApiDTO{
-    @JsonProperty("id")
-    private String playerRapidId;
-    @JsonProperty("name")
-    private String playerName;
-}

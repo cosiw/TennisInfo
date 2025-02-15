@@ -7,6 +7,7 @@ import TENNIS.TENNISINFO.Common.rapid.PlayerApiClient;
 import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -86,4 +87,16 @@ public class MasterController {
 
         return new ResponseEntity("", HttpStatus.OK);
     }
+    @PostMapping("/match")
+    public ResponseEntity saveMatch(){
+        try{
+            masterService.saveMatch();
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(e, HttpStatus.OK);
+        }
+
+        return new ResponseEntity("", HttpStatus.OK);
+    }
+
 }

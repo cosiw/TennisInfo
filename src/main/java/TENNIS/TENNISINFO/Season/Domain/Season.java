@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "season")
+@Table(name = "tb_season")
 @Getter
 @NoArgsConstructor
 public class Season {

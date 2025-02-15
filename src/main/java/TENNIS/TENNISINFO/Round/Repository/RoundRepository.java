@@ -12,8 +12,12 @@ import java.util.Optional;
 @Repository
 public interface RoundRepository extends JpaRepository<Round, Long> {
 
-    @Query("SELECT r FROM Round r WHERE r.rapidRoundId IN :roundRapidIds AND r.season = :season")
-    List<Round> findByRapidRoundIdsAndSeason(List<String> roundRapidIds, Season season);
-
     Optional<Round> findByRapidRoundIdAndSlugAndSeason(String roundRapidId, String slug, Season season);
+
+    @Query("""
+       SELECT r FROM Round r
+       JOIN FETCH r.season s
+       JOIN FETCH s.tournament t
+            """)
+    List<Round> findRoundAndSeasonAndTournament();
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "round")
+@Table(name = "tb_round")
 @Getter
 @Setter
 @NoArgsConstructor

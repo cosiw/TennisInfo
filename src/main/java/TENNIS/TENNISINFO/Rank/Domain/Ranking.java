@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ranking")
+@Table(name = "tb_ranking")
 @Getter
 @NoArgsConstructor
 public class Ranking extends BaseTimeEntity {
