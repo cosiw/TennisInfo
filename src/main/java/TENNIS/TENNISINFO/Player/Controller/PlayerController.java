@@ -97,4 +97,14 @@ public class PlayerController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+    @PostMapping(value="/image")
+    public ResponseEntity teamImage(){
+        try{
+            playerService.saveImage();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity("", HttpStatus.OK);
+    }
 }

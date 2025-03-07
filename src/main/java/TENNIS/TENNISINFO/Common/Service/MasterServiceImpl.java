@@ -74,7 +74,7 @@ public class MasterServiceImpl implements MasterService{
                 .map(PlayerRapidDTO::getPlayerRapidId)
                 .collect(Collectors.toList());
 
-        apiClient = apiClientMap.get("playerApiClientTest");
+        apiClient = apiClientMap.get("playerApiClient");
 
         // 선수 API 조회
         List<PlayerRapidDTO> list = ids.stream()
@@ -95,6 +95,10 @@ public class MasterServiceImpl implements MasterService{
                 .map(rapidDTO -> new Player(rapidDTO))
                 .map(player -> {
                     Optional<Player> searchPlayer = playerRepository.findByRapidPlayerId(player.getRapidPlayerId());
+                    PlayerApiClient playerApiClient = (PlayerApiClient) apiClient;
+                    String rapidId = player.getRapidPlayerId();
+                    String image = playerApiClient.imageApiCall(RapidApi.TEAMIMAGE.getUrl(rapidId), rapidId);
+                    player.setImage(image);
                     if(searchPlayer.isPresent()) player.setPlayerId(searchPlayer.get().getPlayerId());
                     return player;
                 })

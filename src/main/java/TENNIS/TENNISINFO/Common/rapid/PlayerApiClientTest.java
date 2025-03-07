@@ -50,6 +50,7 @@ public class PlayerApiClientTest extends AbstractApiClient<PlayerRapidDTO>{
         JsonNode name= teamNode.path("fullName");
         team.setPlayerName(name.asText());
         team.setPlayerRapidId(teamNode.path("id").toString());
+        team.setBirthDate(transTimeStamp(team.getBirthDate()));
         // 상금
         JsonNode prizeNode = playerNode.path("prizeTotalRaw");
         JsonNode curNode = prizeNode.path("currency");

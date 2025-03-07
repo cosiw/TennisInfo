@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -28,7 +30,9 @@ public abstract class AbstractApiClient<T> {
 
     //protected String rapidApiKey;
     @Value("${x-rapidapi-key}")
-    private String rapidApiKey;
+    protected String rapidApiKey;
+    @Value("${image.upload-dir}")
+    protected String imageDir;
 
     HttpClient client = HttpClient.newHttpClient();
 
@@ -62,6 +66,7 @@ public abstract class AbstractApiClient<T> {
 
         return responseList;
     }
+
 
     protected String sendTennisApi(String param){
         String responseText = "";
@@ -104,6 +109,7 @@ public abstract class AbstractApiClient<T> {
         return responseText;
     }
 
+
     public static String decompressGzip(byte[] compressedData) throws IOException {
         try(GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressedData))){
             return new String(gis.readAllBytes(), "UTF-8");
@@ -115,7 +121,7 @@ public abstract class AbstractApiClient<T> {
             return new String(iis.readAllBytes(), "UTF-8");
         }
     }
-    public DateTimeFormatter transTimeStamp(String timeStamp){
+    public String transTimeStamp(String timeStamp){
         // Unix 타임스탬프 예제 (초 단위)
         long unixTimestamp = Long.parseLong(timeStamp);
 
@@ -126,9 +132,10 @@ public abstract class AbstractApiClient<T> {
         ZonedDateTime kstDateTime = instant.atZone(ZoneId.of("Asia/Seoul"));
 
         // 포맷 설정 (yyyy-MM-dd HH:mm:ss)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-        return formatter;
+
+        return kstDateTime.format(formatter);
     }
 
     public Long eurToUsd(Long eur){

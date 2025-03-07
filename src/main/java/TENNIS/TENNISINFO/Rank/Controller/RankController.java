@@ -37,11 +37,11 @@ public class RankController {
 
     @GetMapping("/player/{rapidPlayerId}/image")
     public void getTopRanking(@PathVariable String rapidPlayerId){
-        try{
-            playerApi.teamImage(rapidPlayerId);
-        }catch(Exception e){
-            System.out.println(e.toString());
-        }
+//        try{
+//            playerApi.teamImage(rapidPlayerId);
+//        }catch(Exception e){
+//            System.out.println(e.toString());
+//        }
 
     }
 
