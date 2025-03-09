@@ -39,9 +39,9 @@ public class Ranking extends BaseTimeEntity {
     @Column(name="BEST_RANKING")
     private Long bestRank;
     @Column(name="CUR_POINTS")
-    private String curPoints;
+    private Long curPoints;
     @Column(name="PRE_POINTS")
-    private String prePoints;
+    private Long prePoints;
     @Column(name="RANKING_LAST_UPDATED")
     private String lastUpdate;
 
@@ -52,6 +52,7 @@ public class Ranking extends BaseTimeEntity {
         this.preRank = rapidDTO.getPreRank();
         this.bestRank = rapidDTO.getBestRank();
         this.curPoints = rapidDTO.getPoint();
+        this.prePoints = rapidDTO.getPrePoints();
         this.lastUpdate = rapidDTO.getUpdateTime();
 
     }

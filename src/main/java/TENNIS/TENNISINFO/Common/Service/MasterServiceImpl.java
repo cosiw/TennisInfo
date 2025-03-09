@@ -20,6 +20,7 @@ import TENNIS.TENNISINFO.Tournament.Domain.Tournament;
 import TENNIS.TENNISINFO.Tournament.Repository.TournamentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -80,6 +81,7 @@ public class MasterServiceImpl implements MasterService{
         List<PlayerRapidDTO> list = ids.stream()
                 .map(p -> {
                     try{
+                        Thread.sleep(1000);
                         return (PlayerRapidDTO)apiClient.executeApiCall(RapidApi.TEAMDETAILS.getUrl(p), RapidApi.TEAMDETAILS.getMethodName() );
                     }catch(Exception e){
                         e.printStackTrace();

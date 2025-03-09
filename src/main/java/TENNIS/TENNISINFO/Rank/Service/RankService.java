@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RankService {
 
-    List<PlayerRapidDTO> getPlayerList(List<RankingRapidDTO> rankingList) throws Exception;
+    List<RankingResponseDTO> getRankingList() throws Exception;
     void savePlayerList(List<PlayerRapidDTO> playerList) throws Exception;
     void saveRanking(List<RankingRapidDTO> rankingList, List<PlayerRapidDTO> playerList) throws Exception;
 }

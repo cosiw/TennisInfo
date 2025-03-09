@@ -15,17 +15,19 @@ public class RankingResponseDTO {
     private Long rank;
     private String playerName;
     private String country;
-    private String livePt;
-    private String pointDiff;
+    private Long curPoint;
+    private Long prePoint;
+    private Long pointDiff;
 
 
     public RankingResponseDTO(Ranking ranking){
-//        this.rankingId = ranking.getRankingId();
-//        this.rapidPlayerId = ranking.getPlayer().getRapidPlayerId();
-//        this.rank = ranking.getRank();
-//        this.playerName = ranking.getPlayer().getPlayerName();
-//        this.country = ranking.getPlayer().getCountry();
-//        this.livePt = ranking.getLivePoints();
-//        this.pointDiff = ranking.getPointsDiff();
+        this.rankingId = ranking.getRankingId();
+        this.rapidPlayerId = ranking.getPlayer().getRapidPlayerId();
+        this.rank = ranking.getCurRank();
+        this.playerName = ranking.getPlayer().getPlayerName();
+        this.country = ranking.getPlayer().getCountry();
+        this.curPoint = ranking.getCurPoints();
+        this.prePoint = ranking.getPrePoints();
+        this.pointDiff = this.curPoint - this.prePoint;
     }
 }

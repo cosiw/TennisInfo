@@ -8,6 +8,7 @@ import TENNIS.TENNISINFO.Common.rapid.RankingApiClient;
 import TENNIS.TENNISINFO.Player.Domain.Player;
 import TENNIS.TENNISINFO.Rank.Domain.Ranking;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class MasterController {
 
     private final MasterService masterService;
+
 
     public MasterController(MasterService masterService){
         this.masterService = masterService;

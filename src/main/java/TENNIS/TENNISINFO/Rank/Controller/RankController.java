@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/api/rank")
 public class RankController {
 
     private final RankService rankService;
@@ -60,21 +61,14 @@ public class RankController {
     public ResponseEntity getRankingList(){
 
         try{
-            // 랭킹 리스트 API 호출
-            List<RankingRapidDTO> rankingList = rankingApi.atpRankings();
+            var rankList = rankService.getRankingList();
 
-            // 랭킹에서 선수들 API 호출
-            List<PlayerRapidDTO> playerList = rankService.getPlayerList(rankingList);
-
-            // 선수 정보 insert
-            rankService.savePlayerList(playerList);
-
-            // 랭킹 정보 insert
-
+            return new ResponseEntity(rankList,HttpStatus.OK);
         }catch(Exception e){
             System.out.println(e.toString());
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity("",HttpStatus.OK);
+
     }
 }

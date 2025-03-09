@@ -16,7 +16,9 @@ public class RankingRapidDTO {
     @JsonProperty("previousRanking")
     private Long preRank;
     @JsonProperty("points")
-    private String point;
+    private Long point;
+    @JsonProperty("previousPoints")
+    private Long prePoints;
     @JsonProperty("bestRanking")
     private Long bestRank;
     @JsonProperty("updateAtTimestamp")
